@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>흡연여부 데이터 분석 포트폴리오 — SungMin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Noto Sans KR', sans-serif; background: #f0f4f8; color: #1e293b; line-height: 1.7; font-size: 14px; }
+
+    .layout { display: flex; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { width: 220px; flex-shrink: 0; background: #0f2b4c; position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 28px 0; }
+    .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .sidebar-logo .name { font-size: 15px; font-weight: 700; color: white; }
+    .sidebar-logo .role { font-size: 11px; color: rgba(255,255,255,.45); margin-top: 3px; }
+    .nav-group { padding: 16px 0 3px 20px; font-size: 10px; font-weight: 600; color: rgba(255,255,255,.3); letter-spacing: .1em; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 20px; font-size: 12px; color: rgba(255,255,255,.6); cursor: pointer; transition: all .15s; text-decoration: none; }
+    .nav-item:hover { background: rgba(255,255,255,.07); color: white; }
+    .nav-item.active { background: rgba(14,116,144,.35); color: white; border-left: 3px solid #0e7490; padding-left: 17px; }
+    .nav-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.25); flex-shrink: 0; }
+    .nav-item.active .nav-dot { background: #0e7490; }
+
+    /* ── MAIN ── */
+    .main { flex: 1; min-width: 0; }
+    .content { max-width: 860px; margin: 0 auto; padding: 40px 32px; }
+
+    /* ── HERO ── */
+    .hero { background: linear-gradient(135deg, #0f2b4c 0%, #1a5276 55%, #0e7490 100%); color: white; border-radius: 14px; padding: 48px 40px; margin-bottom: 40px; position: relative; overflow: hidden; }
+    .hero::after { content: ''; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; border-radius: 50%; background: rgba(14,116,144,.2); }
+    .hero-tag { display: inline-block; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25); border-radius: 20px; padding: 4px 13px; font-size: 11px; margin-bottom: 14px; }
+    .hero h1 { font-size: 26px; font-weight: 700; margin-bottom: 10px; line-height: 1.3; }
+    .hero p { font-size: 14px; opacity: .85; max-width: 520px; margin-bottom: 24px; }
+    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-chip { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 6px; padding: 5px 12px; font-size: 12px; }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 48px; scroll-margin-top: 20px; }
+    .sec-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .sec-badge { background: #0e7490; color: white; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 4px; letter-spacing: .05em; flex-shrink: 0; }
+    .sec-title { font-size: 20px; font-weight: 700; color: #0f2b4c; }
+    .sec-divider { height: 2px; background: linear-gradient(90deg, #0e7490, transparent); border-radius: 1px; margin-bottom: 20px; }
+
+    /* ── CARDS ── */
+    .card { background: white; border-radius: 10px; padding: 20px 22px; border: 1px solid #e2e8f0; box-shadow: 0 1px 6px rgba(0,0,0,.05); margin-bottom: 14px; }
+    .card-title { font-size: 13px; font-weight: 600; color: #0f2b4c; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .card-icon { width: 22px; height: 22px; border-radius: 5px; background: #e0f2fe; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+    @media(max-width:700px){ .grid2,.grid3{ grid-template-columns:1fr; } }
+
+    /* ── KPI ── */
+    .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+    .kpi { background: white; border-radius: 10px; padding: 16px 12px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+    .kpi-val { font-size: 28px; font-weight: 700; color: #0e7490; }
+    .kpi-lab { font-size: 11px; color: #64748b; margin-top: 3px; }
+
+    /* ── ROLE ── */
+    .role-box { display: flex; gap: 12px; }
+    .role-member { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px 20px; flex: 1; }
+    .role-member.highlight { border-color: #0e7490; background: #f0f9ff; }
+    .role-member.leader { border-color: #7c3aed; background: #faf5ff; }
+    .member-name { font-size: 14px; font-weight: 700; color: #0f2b4c; margin-bottom: 6px; }
+    .member-name .tag { font-size: 10px; font-weight: 500; border-radius: 4px; padding: 2px 7px; margin-left: 6px; }
+    .tag-me { background: #e0f2fe; color: #0369a1; }
+    .tag-leader { background: #ede9fe; color: #5b21b6; }
+    .role-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .role-tag { font-size: 11px; border-radius: 4px; padding: 3px 8px; font-weight: 500; }
+    .rt-blue { background: #e0f2fe; color: #0369a1; }
+    .rt-purple { background: #ede9fe; color: #5b21b6; }
+
+    /* ── TECH ── */
+    .tech-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px,1fr)); gap: 10px; }
+    .tech-card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; }
+    .tech-cat { font-size: 10px; background: #f1f5f9; color: #64748b; border-radius: 3px; padding: 1px 6px; display: inline-block; margin-bottom: 5px; }
+    .tech-name { font-size: 13px; font-weight: 600; color: #0f2b4c; margin-bottom: 4px; }
+    .tech-reason { font-size: 11px; color: #64748b; line-height: 1.5; }
+
+    /* ── PIPELINE ── */
+    .pipe-wrap { display: flex; align-items: flex-start; gap: 0; overflow-x: auto; padding: 4px 0 10px; }
+    .pipe-step { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 10px; text-align: center; min-width: 90px; flex: 1; }
+    .pipe-step.hi { border-color: #0e7490; background: #f0f9ff; }
+    .pipe-icon { font-size: 22px; display: block; margin-bottom: 6px; }
+    .pipe-label { font-size: 11px; font-weight: 600; color: #0f2b4c; }
+    .pipe-sub { font-size: 10px; color: #64748b; margin-top: 2px; }
+    .pipe-arrow { color: #94a3b8; font-size: 16px; padding: 0 5px; align-self: center; flex-shrink: 0; }
+
+    /* ── HYPOTHESIS OWNER LABEL ── */
+    .hypo-owner-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .owner-label { font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 20px; }
+    .owner-me { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
+    .owner-leader { background: #ede9fe; color: #5b21b6; border: 1px solid #c4b5fd; }
+    .owner-team { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+
+    /* ── HYPOTHESIS ── */
+    .hypo-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; overflow: hidden; margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,.05); }
+    .hypo-header { padding: 14px 18px 12px; border-left: 5px solid #0e7490; }
+    .hypo-header.purple { border-left-color: #7c3aed; }
+    .hypo-header.team { border-left-color: #16a34a; }
+    .hypo-tag-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+    .hypo-tag { font-size: 10px; font-weight: 700; border-radius: 4px; padding: 2px 7px; }
+    .ht-blue { background: #e0f2fe; color: #0369a1; }
+    .ht-purple { background: #ede9fe; color: #5b21b6; }
+    .ht-green { background: #dcfce7; color: #15803d; }
+    .badge { display: inline-block; font-size: 11px; font-weight: 600; border-radius: 4px; padding: 2px 8px; }
+    .badge-ok { background: #dcfce7; color: #15803d; }
+    .badge-paradox { background: #fef3c7; color: #92400e; }
+    .hypo-title { font-size: 14px; font-weight: 600; color: #0f2b4c; }
+    .hypo-body { padding: 14px 18px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
+    .h-row { display: grid; grid-template-columns: 36px 1fr; gap: 8px; margin-bottom: 6px; font-size: 13px; }
+    .h-label { font-size: 11px; font-weight: 700; color: #94a3b8; padding-top: 2px; }
+    .h-h0 { color: #64748b; }
+    .h-h1 { color: #0f2b4c; font-weight: 500; }
+    .hypo-logic { border-radius: 6px; padding: 10px 13px; font-size: 12px; margin: 10px 0; line-height: 1.6; }
+    .logic-blue { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+    .logic-purple { background: #faf5ff; border: 1px solid #c4b5fd; color: #4c1d95; }
+    .logic-green { background: #f0fdf4; border: 1px solid #86efac; color: #14532d; }
+    .hypo-result { padding: 12px 18px; border-top: 1px solid #e2e8f0; }
+    .method-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+    .method-chip { font-size: 10px; padding: 3px 7px; border-radius: 4px; font-weight: 600; }
+    .mc-t { background: #e0e7ff; color: #3730a3; }
+    .mc-chi { background: #fce7f3; color: #831843; }
+    .mc-anova { background: #fef3c7; color: #78350f; }
+    .mc-pear { background: #f0fdf4; color: #14532d; }
+    .stat-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .stat-chip { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 4px 10px; font-size: 11px; color: #475569; }
+    .stat-chip strong { color: #0e7490; }
+
+    /* ── ANALYSIS BLOCK ── */
+    .analysis-block { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; margin-top: 12px; }
+    .analysis-title { font-size: 12px; font-weight: 600; color: #0f2b4c; margin-bottom: 8px; }
+    .vs-row { display: flex; gap: 10px; align-items: stretch; }
+    .vs-box { flex: 1; border-radius: 8px; padding: 12px 14px; text-align: center; }
+    .vs-smoking { background: #fee2e2; border: 1px solid #fca5a5; }
+    .vs-non { background: #dcfce7; border: 1px solid #86efac; }
+    .vs-label { font-size: 11px; font-weight: 600; margin-bottom: 6px; }
+    .vs-smoking .vs-label { color: #991b1b; }
+    .vs-non .vs-label { color: #14532d; }
+    .vs-val { font-size: 22px; font-weight: 700; }
+    .vs-smoking .vs-val { color: #dc2626; }
+    .vs-non .vs-val { color: #16a34a; }
+    .vs-unit { font-size: 10px; color: #64748b; margin-top: 2px; }
+    .vs-arrow { display: flex; align-items: center; justify-content: center; font-size: 20px; color: #94a3b8; flex-shrink: 0; }
+    .insight-tag { display: inline-block; font-size: 11px; background: #fef3c7; color: #92400e; border-radius: 4px; padding: 2px 8px; font-weight: 500; margin-top: 8px; }
+
+    /* ── TABLE ── */
+    .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .tbl th { background: #f0f4f8; color: #0f2b4c; font-weight: 600; padding: 10px 12px; border: 1px solid #e2e8f0; text-align: left; }
+    .tbl td { padding: 9px 12px; border: 1px solid #e2e8f0; vertical-align: middle; }
+    .tbl tr:hover td { background: #f8fafc; }
+
+    /* ── REVIEW ── */
+    .insight-box { border-left: 4px solid #16a34a; background: #f0fdf4; padding: 12px 15px; border-radius: 0 8px 8px 0; font-size: 13px; color: #14532d; margin-bottom: 10px; }
+    .insight-box.warn { border-left-color: #d97706; background: #fffbeb; color: #78350f; }
+    .insight-box.info { border-left-color: #2563eb; background: #eff6ff; color: #1e40af; }
+    .todo-item { display: flex; gap: 10px; padding: 12px 14px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 8px; }
+    .todo-num { width: 24px; height: 24px; border-radius: 50%; background: #0e7490; color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .todo-num.model { background: #7c3aed; }
+    .todo-text { font-size: 13px; font-weight: 600; color: #0f2b4c; }
+    .todo-sub { font-size: 11px; color: #64748b; margin-top: 3px; line-height: 1.5; }
+    .supplement-item { padding: 12px 14px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; margin-bottom: 8px; font-size: 13px; color: #7c2d12; display: flex; gap: 10px; }
+    .supp-icon { flex-shrink: 0; }
+    .model-section { background: #faf5ff; border: 1px solid #c4b5fd; border-radius: 10px; padding: 18px 20px; margin-top: 16px; }
+    .model-section-title { font-size: 14px; font-weight: 700; color: #4c1d95; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .model-card { background: white; border: 1px solid #c4b5fd; border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; }
+    .model-num { display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: #7c3aed; color: white; font-size: 11px; font-weight: 700; text-align: center; line-height: 22px; margin-right: 8px; flex-shrink: 0; }
+    .model-title { font-size: 13px; font-weight: 600; color: #4c1d95; margin-bottom: 6px; display: flex; align-items: center; }
+    .model-desc { font-size: 12px; color: #6d28d9; line-height: 1.6; }
+    .model-features { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .mf-tag { font-size: 10px; background: #ede9fe; color: #5b21b6; border-radius: 4px; padding: 2px 7px; }
+
+    /* ── CHART ── */
+    .chart-wrap { position: relative; height: 220px; }
+
+    /* ── FOOTER ── */
+    footer { text-align: center; padding: 24px; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; background: white; }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="name">SungMin</div>
+      <div class="role">데이터 분석 · 발표</div>
+    </div>
+    <div class="nav-group">프로젝트</div>
+    <a class="nav-item active" href="#purpose"><div class="nav-dot"></div>프로젝트 목적</a>
+    <a class="nav-item" href="#overview"><div class="nav-dot"></div>프로젝트 개요</a>
+    <div class="nav-group">분석</div>
+    <a class="nav-item" href="#pipeline"><div class="nav-dot"></div>분석 파이프라인</a>
+    <a class="nav-item" href="#hypothesis"><div class="nav-dot"></div>가설별 로직과 결과</a>
+    <div class="nav-group">리뷰</div>
+    <a class="nav-item" href="#conclusion"><div class="nav-dot"></div>결론</a>
+    <a class="nav-item" href="#insight"><div class="nav-dot"></div>인사이트 · 추가 구현</a>
+    <a class="nav-item" href="#supplement"><div class="nav-dot"></div>보완점</a>
+  </nav>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="main">
+    <div class="content">
+
+      <!-- HERO -->
+      <div class="hero">
+        <div class="hero-tag">AI 헬스케어 미니 프로젝트</div>
+        <h1>흡연 여부에 따른<br>건강 지표 상관 분석</h1>
+        <p>흡연자와 비흡연자의 12개 건강 지표를 의학적 기준으로 분류하고, 통계 검정을 통해 흡연과 건강의 관계를 규명합니다.</p>
+        <div class="hero-chips">
+          <div class="hero-chip">Python · pandas · seaborn</div>
+          <div class="hero-chip">t-test · 카이제곱 · ANOVA</div>
+          <div class="hero-chip">담당: 분석 · 발표</div>
+        </div>
+      </div>
+
+      <!-- ══ 01. 프로젝트 목적 ══ -->
+      <div class="section" id="purpose">
+        <div class="sec-head"><div class="sec-badge">01</div><div class="sec-title">프로젝트 목적</div></div>
+        <div class="sec-divider"></div>
+
+        <div class="grid2" style="margin-bottom:14px;">
+          <div class="card">
+            <div class="card-title"><div class="card-icon">🎯</div>배경</div>
+            <p style="font-size:13px;color:#334155;line-height:1.8;">
+              최근 여러 기관에서는 흡연이 개인 건강에 미치는 영향을 정량적으로 파악하고,
+              <strong>예방 중심의 건강관리 정책</strong>을 수립하려는 노력을 강화하고 있습니다.
+              그러나 흡연과 실제로 어떤 건강 지표가 연관되는지, 어떤 지표는 무관한지에 대한
+              데이터 기반 근거가 명확하지 않은 상황입니다.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-title"><div class="card-icon">❓</div>문제 정의</div>
+            <p style="font-size:13px;color:#334155;line-height:1.8;margin-bottom:10px;">
+              흡연 여부(label)에 따라 어떤 건강 지표가 통계적으로 유의미한 차이를 보이는가?
+            </p>
+            <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;padding:10px 12px;font-size:12px;color:#0c4a6e;">
+              <div style="margin-bottom:4px;">✦ 흡연과 <strong>유의한</strong> 건강 지표는 무엇인가?</div>
+              <div style="margin-bottom:4px;">✦ 흡연과 <strong>무관한</strong> 지표도 존재하는가?</div>
+              <div>✦ 임상적 기준으로 이상(Caution) 비율이 흡연자에서 더 높은가?</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><div class="card-icon">🏆</div>프로젝트 성과</div>
+          <div class="kpi-row" style="margin-bottom:0;">
+            <div class="kpi"><div class="kpi-val">12</div><div class="kpi-lab">분석 건강 지표</div></div>
+            <div class="kpi"><div class="kpi-val">6</div><div class="kpi-lab">가설 채택</div></div>
+            <div class="kpi"><div class="kpi-val">5종</div><div class="kpi-lab">통계 검정 적용</div></div>
+            <div class="kpi"><div class="kpi-val">팀+개인</div><div class="kpi-lab">가설 통합 분석</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 02. 프로젝트 개요 ══ -->
+      <div class="section" id="overview">
+        <div class="sec-head"><div class="sec-badge">02</div><div class="sec-title">프로젝트 개요</div></div>
+        <div class="sec-divider"></div>
+
+        <!-- 데이터 설명 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-title"><div class="card-icon">📊</div>데이터 설명</div>
+          <div class="grid2">
+            <table class="tbl">
+              <thead><tr><th>항목</th><th>내용</th></tr></thead>
+              <tbody>
+                <tr><td>파일명</td><td>smoking_health_data.csv</td></tr>
+                <tr><td>타겟 변수</td><td>label (1 = 흡연자, 0 = 비흡연자)</td></tr>
+                <tr><td>분석 지표 수</td><td>12개 건강 지표</td></tr>
+                <tr><td>파생 변수</td><td>BMI 구간 (6단계), 나이대</td></tr>
+              </tbody>
+            </table>
+            <div>
+              <div style="font-size:12px;font-weight:600;color:#64748b;margin-bottom:8px;">주요 분석 변수</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                <span style="background:#f1f5f9;color:#475569;border-radius:4px;padding:3px 8px;font-size:11px;">나이 / 키 / 몸무게</span>
+                <span style="background:#f1f5f9;color:#475569;border-radius:4px;padding:3px 8px;font-size:11px;">BMI</span>
+                <span style="background:#f1f5f9;color:#475569;border-radius:4px;padding:3px 8px;font-size:11px;">공복혈당</span>
+                <span style="background:#f1f5f9;color:#475569;border-radius:4px;padding:3px 8px;font-size:11px;">혈압 (맥압)</span>
+                <span style="background:#f1f5f9;color:#475569;border-radius:4px;padding:3px 8px;font-size:11px;">중성지방 (TG)</span>
+                <span style="background:#f1f5f9;color:#475569;border-radius:4px;padding:3px 8px;font-size:11px;">총콜레스테롤</span>
+                <span style="background:#f1f5f9;color:#475569;border-radius:4px;padding:3px 8px;font-size:11px;">HDL / LDL</span>
+                <span style="background:#f1f5f9;color:#475569;border-radius:4px;padding:3px 8px;font-size:11px;">헤모글로빈 (Hb)</span>
+                <span style="background:#f1f5f9;color:#475569;border-radius:4px;padding:3px 8px;font-size:11px;">AST / ALT / γ-GTP</span>
+                <span style="background:#f1f5f9;color:#475569;border-radius:4px;padding:3px 8px;font-size:11px;">크레아티닌</span>
+                <span style="background:#f1f5f9;color:#475569;border-radius:4px;padding:3px 8px;font-size:11px;">시력 / 충치</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 담당 역할 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-title"><div class="card-icon">👥</div>담당 역할</div>
+          <div class="role-box">
+            <div class="role-member highlight">
+              <div class="member-name">SungMin <span class="tag tag-me">본인</span></div>
+              <div class="role-tags">
+                <span class="role-tag rt-blue">데이터 분석 전담</span>
+                <span class="role-tag rt-blue">가설 수립 및 검정</span>
+                <span class="role-tag rt-blue">시각화</span>
+                <span class="role-tag rt-blue">발표</span>
+              </div>
+              <div style="font-size:11px;color:#64748b;margin-top:8px;line-height:1.6;">
+                12개 건강 지표 정상/이상 이진화, 단변량·이변량·상관관계 분석 수행,
+                Heatmap 3종 제작, 가설 검정 결과 도출 및 최종 발표 진행
+              </div>
+            </div>
+            <div class="role-member leader">
+              <div class="member-name">팀장 <span class="tag tag-leader">팀장</span></div>
+              <div class="role-tags">
+                <span class="role-tag rt-purple">KMeans 클러스터링</span>
+                <span class="role-tag rt-purple">성별 보정</span>
+                <span class="role-tag rt-purple">BMI 역설 검증</span>
+                <span class="role-tag rt-purple">로지스틱 회귀</span>
+              </div>
+              <div style="font-size:11px;color:#64748b;margin-top:8px;line-height:1.6;">
+                성별 데이터 부재를 KMeans로 보정, BMI 역설 가설 수립 및 검증,
+                statsmodels 기반 로지스틱 회귀로 Feature 적합성 분석
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 기술 스택 -->
+        <div class="card">
+          <div class="card-title"><div class="card-icon">⚙️</div>기술 스택 및 선정 이유</div>
+          <div class="tech-grid">
+            <div class="tech-card">
+              <div class="tech-cat">기반 언어</div>
+              <div class="tech-name">Python</div>
+              <div class="tech-reason">데이터 분석 생태계가 풍부하고 Jupyter 환경에서 탐색적 분석에 최적화</div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-cat">데이터 처리</div>
+              <div class="tech-name">pandas</div>
+              <div class="tech-reason">결측치 처리·파생변수 생성·그룹 집계를 직관적 API로 처리 가능</div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-cat">시각화</div>
+              <div class="tech-name">seaborn</div>
+              <div class="tech-reason">Heatmap·Boxplot·KDE 등 통계 시각화 특화, matplotlib보다 코드 간결</div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-cat">통계 검정</div>
+              <div class="tech-name">scipy.stats</div>
+              <div class="tech-reason">t-test, 카이제곱, Pearson r 등 모든 통계 검정을 단일 라이브러리로 처리</div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-cat">결측치 고급 처리</div>
+              <div class="tech-name">IterativeImputer</div>
+              <div class="tech-reason">나이대별 분포 차이가 있는 변수에 단순 평균 대신 다중 회귀 기반 보완</div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-cat">세밀 커스텀</div>
+              <div class="tech-name">matplotlib</div>
+              <div class="tech-reason">다중 패널·정상범위 음영 오버레이 등 seaborn으로 처리 어려운 설정에 활용</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 03. 분석 파이프라인 ══ -->
+      <div class="section" id="pipeline">
+        <div class="sec-head"><div class="sec-badge">03</div><div class="sec-title">분석 파이프라인</div></div>
+        <div class="sec-divider"></div>
+
+        <div class="pipe-wrap" style="margin-bottom:16px;">
+          <div class="pipe-step hi"><span class="pipe-icon">📥</span><div class="pipe-label">데이터 로드</div><div class="pipe-sub">CSV 불러오기</div></div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step"><span class="pipe-icon">🔍</span><div class="pipe-label">EDA</div><div class="pipe-sub">기초 통계 확인</div></div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step hi"><span class="pipe-icon">🧹</span><div class="pipe-label">데이터 정제</div><div class="pipe-sub">결측치 처리</div></div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step hi"><span class="pipe-icon">🏷️</span><div class="pipe-label">지표 이진화</div><div class="pipe-sub">정상/이상 분류</div></div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step"><span class="pipe-icon">📊</span><div class="pipe-label">단변량 분석</div><div class="pipe-sub">분포 시각화</div></div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step"><span class="pipe-icon">🔗</span><div class="pipe-label">이변량 분석</div><div class="pipe-sub">검정 수행</div></div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step"><span class="pipe-icon">🌡️</span><div class="pipe-label">상관관계</div><div class="pipe-sub">Heatmap 3종</div></div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step hi"><span class="pipe-icon">💡</span><div class="pipe-label">결론 도출</div><div class="pipe-sub">인사이트</div></div>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <div class="card-title"><div class="card-icon">🧹</div>결측치 처리 전략</div>
+            <table class="tbl">
+              <thead><tr><th>컬럼</th><th>처리 방법</th><th>이유</th></tr></thead>
+              <tbody>
+                <tr><td>혈압</td><td>중앙값</td><td>이상치 영향 최소화</td></tr>
+                <tr><td>시력</td><td>최빈값</td><td>범주형 특성 반영</td></tr>
+                <tr><td>중성지방</td><td>나이대별 그룹 평균</td><td>나이별 기저값 차이 보정</td></tr>
+                <tr><td>공복혈당</td><td>전체 평균</td><td>정규 분포에 근접</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-title"><div class="card-icon">🏷️</div>주요 지표 이진화 기준</div>
+            <table class="tbl">
+              <thead><tr><th>지표</th><th>이상(Caution) 기준</th></tr></thead>
+              <tbody>
+                <tr><td>공복혈당</td><td>≥ 100 mg/dL</td></tr>
+                <tr><td>중성지방 (TG)</td><td>≥ 150 mg/dL</td></tr>
+                <tr><td>HDL</td><td>남 &lt;40 / 여 &lt;50 mg/dL</td></tr>
+                <tr><td>LDL</td><td>≥ 130 mg/dL</td></tr>
+                <tr><td>AST / ALT</td><td>&gt; 40 U/L</td></tr>
+                <tr><td>γ-GTP</td><td>남 ≥70 / 여 ≥40 U/L</td></tr>
+                <tr><td>충치</td><td>1개 이상</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 04. 가설별 로직과 결과 ══ -->
+      <div class="section" id="hypothesis">
+        <div class="sec-head"><div class="sec-badge">04</div><div class="sec-title">가설별 로직과 결과</div></div>
+        <div class="sec-divider"></div>
+
+        <!-- SungMin 가설 -->
+        <div class="hypo-owner-row">
+          <span class="owner-label owner-me">SungMin의 가설</span>
+          <span style="font-size:12px;color:#64748b;">지질대사·대사 지표·헤모글로빈 중심으로 흡연 영향 검증</span>
+        </div>
+
+        <!-- 가설 1 — 지질대사 -->
+        <div class="hypo-card">
+          <div class="hypo-header">
+            <div class="hypo-tag-row">
+              <span class="hypo-tag ht-blue">가설 1 — 지질대사</span>
+              <span class="badge badge-ok">✓ 대립가설 채택</span>
+            </div>
+            <div class="hypo-title">흡연 여부에 따라 중성지방(TG)·HDL에 유의미한 차이가 있다.</div>
+          </div>
+          <div class="hypo-body">
+            <div class="h-row"><span class="h-label">H₀</span><span class="h-h0">흡연자와 비흡연자의 중성지방·HDL 평균은 같다.</span></div>
+            <div class="h-row"><span class="h-label">H₁</span><span class="h-h1">흡연자의 중성지방은 더 높고, HDL은 더 낮다.</span></div>
+            <div class="hypo-logic logic-blue">
+              <strong>분석 로직</strong> — 각 지표를 의학적 기준(TG &lt;150, HDL 남≥40/여≥50)으로 정상/이상 이진화 →
+              흡연자·비흡연자 Caution 비율(%) 비교 → 독립표본 t-test로 유의성 검증 (p &lt; 0.05)
+            </div>
+            <!-- 지질대사 분석 내용 -->
+            <div class="analysis-block">
+              <div class="analysis-title">📊 지질대사 분석 결과</div>
+              <div class="vs-row" style="margin-bottom:10px;">
+                <div class="vs-box vs-smoking">
+                  <div class="vs-label">🚬 흡연자 (TG)</div>
+                  <div class="vs-val">150.40</div>
+                  <div class="vs-unit">mg/dL · 정상 경계 도달</div>
+                </div>
+                <div class="vs-arrow">→</div>
+                <div class="vs-box vs-non">
+                  <div class="vs-label">🚭 비흡연자 (TG)</div>
+                  <div class="vs-val">113.45</div>
+                  <div class="vs-unit">mg/dL · 정상 범위 내</div>
+                </div>
+              </div>
+              <div class="vs-row">
+                <div class="vs-box" style="background:#fee2e2;border:1px solid #fca5a5;">
+                  <div class="vs-label" style="color:#991b1b;">🚬 흡연자 (HDL)</div>
+                  <div class="vs-val" style="color:#dc2626;">53.91</div>
+                  <div class="vs-unit">mg/dL · 낮은 수치</div>
+                </div>
+                <div class="vs-arrow">→</div>
+                <div class="vs-box" style="background:#dcfce7;border:1px solid #86efac;">
+                  <div class="vs-label" style="color:#14532d;">🚭 비흡연자 (HDL)</div>
+                  <div class="vs-val" style="color:#16a34a;">59.35</div>
+                  <div class="vs-unit">mg/dL · 상대적으로 높음</div>
+                </div>
+              </div>
+              <span class="insight-tag">⚠️ 흡연자의 TG +32.9%, HDL –9.2% → 심혈관 위험 증가 시사</span>
+            </div>
+          </div>
+          <div class="hypo-result">
+            <div class="method-row">
+              <span class="method-chip mc-t">t-test</span>
+              <span style="font-size:12px;color:#16a34a;font-weight:600;">p &lt; 0.05 → 유의</span>
+            </div>
+            <div class="stat-row">
+              <div class="stat-chip">TG 흡연자 <strong>150.40</strong> mg/dL</div>
+              <div class="stat-chip">TG 비흡연자 <strong>113.45</strong> mg/dL</div>
+              <div class="stat-chip">HDL 흡연자 <strong>53.91</strong></div>
+              <div class="stat-chip">HDL 비흡연자 <strong>59.35</strong></div>
+              <div class="stat-chip">BMI ↔ TG 상관 <strong>r = 0.291</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 가설 2 — 대사 지표 -->
+        <div class="hypo-card">
+          <div class="hypo-header">
+            <div class="hypo-tag-row">
+              <span class="hypo-tag ht-blue">가설 2 — 대사 지표</span>
+              <span class="badge badge-ok">✓ 대립가설 채택</span>
+            </div>
+            <div class="hypo-title">흡연자는 비흡연자 대비 공복혈당·간기능 수치가 더 높다.</div>
+          </div>
+          <div class="hypo-body">
+            <div class="h-row"><span class="h-label">H₀</span><span class="h-h0">두 집단의 공복혈당·간수치 평균은 같다.</span></div>
+            <div class="h-row"><span class="h-label">H₁</span><span class="h-h1">흡연자의 공복혈당·간수치가 비흡연자보다 유의하게 높다.</span></div>
+            <div class="hypo-logic logic-blue">
+              <strong>분석 로직</strong> — 공복혈당 → 독립표본 t-test /
+              간기능(AST·ALT·γ-GTP) 이상 비율 → Caution % 비교 /
+              요단백 등급별 크레아티닌 → ANOVA 병행 적용
+            </div>
+          </div>
+          <div class="hypo-result">
+            <div class="method-row">
+              <span class="method-chip mc-t">t-test</span>
+              <span class="method-chip mc-anova">ANOVA</span>
+              <span style="font-size:12px;color:#16a34a;font-weight:600;">p &lt; 0.05 → 유의</span>
+            </div>
+            <div class="stat-row">
+              <div class="stat-chip">공복혈당 흡연자 <strong>102.35</strong> mg/dL</div>
+              <div class="stat-chip">공복혈당 비흡연자 <strong>97.54</strong> mg/dL</div>
+              <div class="stat-chip">나이 ↔ 공복혈당 <strong>r = 0.190</strong></div>
+              <div class="stat-chip">간수치 Caution 비율 <strong>흡연자에서 증가</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 가설 3 — 헤모글로빈 -->
+        <div class="hypo-card">
+          <div class="hypo-header">
+            <div class="hypo-tag-row">
+              <span class="hypo-tag ht-blue">가설 3 — 헤모글로빈</span>
+              <span class="badge badge-ok">✓ 대립가설 채택</span>
+            </div>
+            <div class="hypo-title">흡연자에서 헤모글로빈(Hb) 이상 비율이 비흡연자보다 높다.</div>
+          </div>
+          <div class="hypo-body">
+            <div class="h-row"><span class="h-label">H₀</span><span class="h-h0">두 집단의 헤모글로빈 분포는 같다.</span></div>
+            <div class="h-row"><span class="h-label">H₁</span><span class="h-h1">흡연자에서 헤모글로빈 이상(Caution) 비율이 더 높다.</span></div>
+            <div class="hypo-logic logic-blue">
+              <strong>분석 로직</strong> — 성별 기준(남 13~17 / 여 12~16 g/dL)으로 정상/이상 이진화 →
+              집단별 Caution 비율 비교 → 독립표본 t-test 검정
+            </div>
+          </div>
+          <div class="hypo-result">
+            <div class="method-row">
+              <span class="method-chip mc-t">t-test</span>
+              <span style="font-size:12px;color:#16a34a;font-weight:600;">p &lt; 0.05 → 유의</span>
+            </div>
+            <div class="stat-row">
+              <div class="stat-chip">헤모글로빈 Caution 비율 <strong>흡연자에서 높음</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 팀장 가설 -->
+        <div class="hypo-owner-row" style="margin-top:24px;">
+          <span class="owner-label owner-leader">팀장의 가설</span>
+          <span style="font-size:12px;color:#64748b;">도메인 지식 기반의 BMI 역설 — 키·몸무게 각각에 양(+) 영향, BMI에서 상쇄됨</span>
+        </div>
+
+        <!-- 가설 4 — BMI 역설 (팀장) -->
+        <div class="hypo-card">
+          <div class="hypo-header purple">
+            <div class="hypo-tag-row">
+              <span class="hypo-tag ht-purple">가설 4 — BMI 역설 (팀장)</span>
+              <span class="badge badge-paradox">★ 역설 가설 채택</span>
+            </div>
+            <div class="hypo-title">흡연이 키·몸무게 각각에 양(+) 영향을 주므로, BMI에서는 두 효과가 상쇄되어 집단 간 유의한 차이가 없을 것이다.</div>
+          </div>
+          <div class="hypo-body">
+            <div class="h-row"><span class="h-label">H₀</span><span class="h-h0">흡연자와 비흡연자의 BMI에 유의한 차이가 있다. (기존 상식)</span></div>
+            <div class="h-row"><span class="h-label">H₁</span><span class="h-h1">흡연이 키와 몸무게 각각에 양의 영향을 주어 BMI에서는 차이가 없다. (역설)</span></div>
+            <div class="hypo-logic logic-purple">
+              <strong>팀장의 분석 로직</strong> — 흡연이 키(+)와 몸무게(+) 각각에 양의 영향을 미치므로, BMI(= 몸무게/키²)에서는 두 효과가 서로 상쇄될 수 있다는 가설.
+              키·몸무게 각각의 흡연 집단 차이 확인 → BMI 값에 대한 t-test 수행 → 유의하지 않으면 역설 채택.
+              또한 KMeans 클러스터링으로 성별 Proxy를 생성하여 성별 효과를 보정한 뒤 재검증.
+            </div>
+            <!-- BMI 분석 내용 -->
+            <div class="analysis-block" style="background:#faf5ff;border-color:#c4b5fd;">
+              <div class="analysis-title" style="color:#4c1d95;">📊 BMI 분석 결과 — SungMin vs 팀장의 관점 비교</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                <div style="background:#f0f9ff;border:1px solid #7dd3fc;border-radius:6px;padding:10px 12px;">
+                  <div style="font-size:11px;font-weight:600;color:#0369a1;margin-bottom:4px;">SungMin 관점</div>
+                  <div style="font-size:12px;color:#0c4a6e;line-height:1.6;">
+                    흡연자 BMI가 비흡연자보다 유의하게 높음 (t-test, p &lt; 0.05). 단순 수치 비교에서 흡연 집단의 BMI가 더 높게 측정됨.
+                  </div>
+                  <div style="font-size:11px;color:#0369a1;margin-top:6px;font-weight:500;">BMI → 흡연자 &gt; 비흡연자 ✓</div>
+                </div>
+                <div style="background:#faf5ff;border:1px solid #c4b5fd;border-radius:6px;padding:10px 12px;">
+                  <div style="font-size:11px;font-weight:600;color:#5b21b6;margin-bottom:4px;">팀장 관점 (BMI 역설)</div>
+                  <div style="font-size:12px;color:#4c1d95;line-height:1.6;">
+                    키·몸무게 각각에 흡연이 양의 영향 → BMI에서 상쇄. 집단 간 BMI 차이 없음 확인 (역설 가설 채택).
+                  </div>
+                  <div style="font-size:11px;color:#5b21b6;margin-top:6px;font-weight:500;">BMI 집단 차이 없음 → 역설 확인 ★</div>
+                </div>
+              </div>
+              <div style="font-size:12px;color:#7c3aed;background:#ede9fe;border-radius:5px;padding:8px 10px;line-height:1.6;">
+                💡 <strong>핵심 인사이트</strong>: 동일한 데이터에서 분석 관점에 따라 정반대의 결론이 도출될 수 있습니다. SungMin은 흡연자의 BMI가 높다고 결론 내린 반면, 팀장은 키·몸무게 개별 효과의 상쇄로 BMI 차이가 없다고 해석했습니다.
+              </div>
+            </div>
+          </div>
+          <div class="hypo-result">
+            <div class="method-row">
+              <span class="method-chip mc-t">t-test</span>
+              <span class="method-chip" style="background:#ede9fe;color:#4c1d95;">KMeans 성별 보정</span>
+              <span style="font-size:12px;color:#d97706;font-weight:600;">BMI 집단 간 차이 없음 → 역설 확인</span>
+            </div>
+            <div class="stat-row">
+              <div class="stat-chip">키 흡연 효과 <strong>양(+)</strong></div>
+              <div class="stat-chip">몸무게 흡연 효과 <strong>양(+)</strong></div>
+              <div class="stat-chip">BMI 집단 차이 <strong>유의하지 않음</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 팀 가설 종합 -->
+        <div class="hypo-owner-row" style="margin-top:24px;">
+          <span class="owner-label owner-team">팀 가설 종합</span>
+          <span style="font-size:12px;color:#64748b;">SungMin + 팀장 가설을 통합한 팀 차원의 결론</span>
+        </div>
+
+        <div class="hypo-card">
+          <div class="hypo-header team">
+            <div class="hypo-tag-row">
+              <span class="hypo-tag ht-green">팀 종합 가설</span>
+              <span class="badge badge-ok">✓ 종합 검증 완료</span>
+            </div>
+            <div class="hypo-title">흡연은 지질대사·대사 지표·헤모글로빈에 유의한 영향을 미치며, BMI에서는 키·몸무게 효과의 상쇄로 집단 간 차이가 없을 수 있다.</div>
+          </div>
+          <div class="hypo-body">
+            <div class="hypo-logic logic-green">
+              <strong>팀 가설 종합 논리</strong><br>
+              SungMin의 분석으로 흡연이 지질대사(TG↑, HDL↓), 대사 지표(공복혈당↑, 간기능↑), 헤모글로빈에 유의한 영향을 미침을 확인.
+              팀장의 BMI 역설 분석으로 흡연이 키와 몸무게 각각에 양(+) 영향을 주지만 BMI라는 복합 지표에서는 두 효과가 상쇄됨을 검증.
+              두 분석을 통합하면 흡연은 대사 전반에 영향을 주되, 지표의 정의 방식에 따라 효과가 은폐될 수 있음을 알 수 있습니다.
+            </div>
+            <div style="margin-top:12px;">
+              <table class="tbl">
+                <thead><tr><th>가설</th><th>담당</th><th>결과</th><th>핵심 수치</th></tr></thead>
+                <tbody>
+                  <tr><td>지질대사 (TG·HDL)</td><td>SungMin</td><td><span class="badge badge-ok">채택</span></td><td>TG +32.9%, HDL –9.2%</td></tr>
+                  <tr><td>대사 지표 (공복혈당·간기능)</td><td>SungMin</td><td><span class="badge badge-ok">채택</span></td><td>공복혈당 +4.9%</td></tr>
+                  <tr><td>헤모글로빈</td><td>SungMin</td><td><span class="badge badge-ok">채택</span></td><td>Caution 비율 흡연자↑</td></tr>
+                  <tr><td>BMI 역설</td><td>팀장</td><td><span class="badge badge-paradox">역설 채택</span></td><td>키·몸무게 효과 상쇄</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="hypo-result" style="background:#f0fdf4;">
+            <div style="font-size:13px;color:#14532d;font-weight:500;">
+              팀 결론: 흡연은 지질·혈당·간기능·헤모글로빈에 복합적으로 영향을 미쳐 대사증후군 위험을 높이며,
+              BMI 단일 지표만으로는 흡연의 신체 영향을 충분히 포착하지 못할 수 있습니다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 05. 결론 ══ -->
+      <div class="section" id="conclusion">
+        <div class="sec-head"><div class="sec-badge">05</div><div class="sec-title">결론</div></div>
+        <div class="sec-divider"></div>
+
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-title"><div class="card-icon">📊</div>가설 검정 최종 요약</div>
+          <div class="chart-wrap"><canvas id="summaryChart"></canvas></div>
+        </div>
+
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-title"><div class="card-icon">📈</div>흡연자 vs 비흡연자 — 핵심 지표 비교</div>
+          <div class="chart-wrap"><canvas id="compareChart"></canvas></div>
+        </div>
+
+        <div class="insight-box">
+          <strong>지질대사</strong> — 흡연자의 TG는 비흡연자 대비 32.9% 높고(150.40 vs 113.45 mg/dL), HDL은 유의하게 낮아(53.91 vs 59.35) 심혈관 질환 위험이 증가합니다.
+        </div>
+        <div class="insight-box">
+          <strong>대사 지표</strong> — 공복혈당(102.35 vs 97.54 mg/dL)이 흡연자에서 유의하게 높아, 인슐린 저항성과의 연관 가능성을 시사합니다.
+        </div>
+        <div class="insight-box">
+          <strong>간기능 · 충치</strong> — 간효소(AST/ALT/γ-GTP) Caution 비율과 충치 발생률 모두 흡연자에서 높게 나타나 전신적 건강 악화 패턴이 확인됩니다.
+        </div>
+        <div class="insight-box warn">
+          <strong>BMI 역설 (팀장)</strong> — 흡연이 키·몸무게 각각에 양의 영향을 미치지만 BMI에서는 두 효과가 상쇄됩니다. BMI 단일 지표만으로 흡연 영향을 판단하면 과소평가될 수 있습니다.
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+          <div class="card-title"><div class="card-icon">✅</div>결론 검증</div>
+          <table class="tbl">
+            <thead><tr><th>검증 방법</th><th>내용</th><th>결과</th></tr></thead>
+            <tbody>
+              <tr><td>p-value 기준</td><td>유의수준 0.05 적용</td><td>4개 가설 모두 채택 (BMI 역설 포함)</td></tr>
+              <tr><td>Caution 비율 교차 확인</td><td>수치 검정 + 비율 시각화 이중 검증</td><td>t-test 결과와 Caution % 방향 일치</td></tr>
+              <tr><td>다중 Heatmap 비교</td><td>흡연자·비흡연자 별도 Heatmap 생성</td><td>집단 간 상관 패턴 차이 시각적 확인</td></tr>
+              <tr><td>팀장 BMI 역설 검증</td><td>키·몸무게 개별 효과 + KMeans 성별 보정</td><td>BMI에서 효과 상쇄 확인</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══ 06. 인사이트 및 추가 구현 ══ -->
+      <div class="section" id="insight">
+        <div class="sec-head"><div class="sec-badge">06</div><div class="sec-title">인사이트 및 앞으로 추가 구현할 점</div></div>
+        <div class="sec-divider"></div>
+
+        <div class="insight-box info" style="margin-bottom:14px;">
+          흡연자 집단은 지질·혈당·간기능·구강건강 전반에서 이상 비율이 높아 <strong>대사증후군 위험군</strong>에 해당할 가능성이 있습니다.
+          단일 지표가 아닌 복합 지표 이상의 동시 발생 패턴을 추적하는 것이 다음 분석의 핵심입니다.
+        </div>
+
+        <div class="todo-item">
+          <div class="todo-num">1</div>
+          <div>
+            <div class="todo-text">나이대별 흡연 영향 심층 분석</div>
+            <div class="todo-sub">나이대×흡연여부 교호작용 검정으로 어느 연령대에서 흡연 영향이 가장 큰지 파악. ANCOVA 또는 연령 표준화 분석 적용.</div>
+          </div>
+        </div>
+        <div class="todo-item">
+          <div class="todo-num">2</div>
+          <div>
+            <div class="todo-text">다중 이상 지표 동시 발생 분석</div>
+            <div class="todo-sub">흡연자 중 2개 이상 지표가 Caution인 비율 추적 → 대사증후군 복합 위험 패턴 정량화</div>
+          </div>
+        </div>
+        <div class="todo-item">
+          <div class="todo-num">3</div>
+          <div>
+            <div class="todo-text">성별 데이터 수집 또는 보정</div>
+            <div class="todo-sub">HDL·헤모글로빈 등 성별 영향이 큰 지표의 해석 신뢰도 향상을 위해 성별 정보 확보 또는 KMeans Gender Proxy 적용 확대</div>
+          </div>
+        </div>
+
+        <!-- 추가 구현 가능 모델 -->
+        <div class="model-section">
+          <div class="model-section-title">
+            🤖 추가 구현 가능 모델
+          </div>
+
+          <div class="model-card">
+            <div class="model-title"><span class="model-num">1</span>흡연여부 자동 판별 모델</div>
+            <div class="model-desc">
+              흡연 여부 표시(label)가 없는 데이터에서도 건강 지표 데이터만으로 흡연 여부를 판단할 수 있는 분류 모델을 구현합니다.
+              본 분석에서 유의하게 차이 나는 지표(TG, HDL, 공복혈당, 간수치, 헤모글로빈)를 Feature로 활용하여,
+              흡연 여부가 명시되지 않은 건강검진 데이터에도 적용 가능한 범용 분류 모델을 목표로 합니다.
+            </div>
+            <div class="model-features">
+              <span class="mf-tag">Feature: TG · HDL · 공복혈당 · 간수치 · Hb</span>
+              <span class="mf-tag">Logistic Regression → Random Forest</span>
+              <span class="mf-tag">건강검진 데이터 적용 가능</span>
+              <span class="mf-tag">흡연 미신고자 탐지</span>
+            </div>
+          </div>
+
+          <div class="model-card">
+            <div class="model-title"><span class="model-num">2</span>금연 후 건강 지표 회복 시각화 모델</div>
+            <div class="model-desc">
+              흡연자와 비흡연자의 건강 지표 차이를 분석하여, 금연 시 어떤 지표가 어느 수준까지 회복될 수 있는지를 시각화합니다.
+              현재 흡연자의 수치에서 비흡연자 평균까지의 gap을 계산하고,
+              의학 문헌의 금연 후 회복 타임라인(1개월·6개월·1년·3년)과 결합하여
+              "내가 금연하면 몇 달 후 어떤 수치로 돌아올 수 있는가"를 인터랙티브하게 보여주는 대시보드를 목표로 합니다.
+            </div>
+            <div class="model-features">
+              <span class="mf-tag">TG · HDL · 공복혈당 회복 수치 예측</span>
+              <span class="mf-tag">금연 타임라인 시각화</span>
+              <span class="mf-tag">인터랙티브 Streamlit 대시보드</span>
+              <span class="mf-tag">개인화 건강 회복 가이드</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 07. 보완점 ══ -->
+      <div class="section" id="supplement">
+        <div class="sec-head"><div class="sec-badge">07</div><div class="sec-title">보완점</div></div>
+        <div class="sec-divider"></div>
+
+        <div class="supplement-item">
+          <div class="supp-icon">⚠️</div>
+          <div>
+            <strong>성별 데이터 부재</strong><br>
+            <span style="font-size:12px;">HDL·헤모글로빈은 성별에 따라 정상 범위가 다름에도 성별 보정 없이 분석. 팀장의 KMeans 보정 방식을 전면 도입하여 신뢰도 향상 필요.</span>
+          </div>
+        </div>
+        <div class="supplement-item">
+          <div class="supp-icon">⚠️</div>
+          <div>
+            <strong>나이 혼란 변수(Confounding) 미통제</strong><br>
+            <span style="font-size:12px;">흡연자 집단이 특정 나이대에 편중될 경우, 나이 효과가 흡연 효과처럼 보일 수 있음. ANCOVA 또는 연령 표준화 분석 필요.</span>
+          </div>
+        </div>
+        <div class="supplement-item">
+          <div class="supp-icon">⚠️</div>
+          <div>
+            <strong>이진화 단순화</strong><br>
+            <span style="font-size:12px;">지표를 정상/이상으로 단순 이진화하여 경계(Borderline) 구간 무시. 3단계(정상·경계·이상) 분류로 세분화 시 더 세밀한 위험 차이 포착 가능.</span>
+          </div>
+        </div>
+        <div class="supplement-item">
+          <div class="supp-icon">⚠️</div>
+          <div>
+            <strong>흡연량·흡연 기간 데이터 부재</strong><br>
+            <span style="font-size:12px;">현 데이터는 흡연 여부(0/1)만 존재. 하루 흡연량·흡연 기간 등 용량-반응 관계 분석 불가. 추후 연구에서 정량적 흡연 데이터 수집 필요.</span>
+          </div>
+        </div>
+        <div class="supplement-item">
+          <div class="supp-icon">⚠️</div>
+          <div>
+            <strong>다중 검정 문제 (Multiple Testing)</strong><br>
+            <span style="font-size:12px;">여러 지표에 동시에 p &lt; 0.05 검정을 적용하면 1종 오류(거짓 양성) 발생 위험 증가. Bonferroni 또는 Benjamini-Hochberg 보정 적용 권장.</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+
+    <footer>
+      흡연여부 데이터 분석 포트폴리오 — SungMin · AI 헬스케어 미니 프로젝트 · smoking_health_data.csv
+    </footer>
+  </main>
+</div>
+
+<script>
+// 사이드바 스크롤 활성화
+const sections = document.querySelectorAll('.section[id]');
+const navItems = document.querySelectorAll('.nav-item');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('active'));
+      const active = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+sections.forEach(s => observer.observe(s));
+
+// 가설 요약 도넛
+new Chart(document.getElementById('summaryChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['SungMin 가설 채택 (3개)', '팀장 BMI 역설 채택 (1개)'],
+    datasets: [{ data: [3, 1], backgroundColor: ['#22c55ecc', '#7c3aedcc'], borderWidth: 3, borderColor: '#fff' }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '65%',
+    plugins: {
+      legend: { position: 'right', labels: { font: { family: 'Noto Sans KR', size: 12 }, padding: 14 } },
+      tooltip: { callbacks: { label: c => ` ${c.label}` } }
+    }
+  }
+});
+
+// 핵심 지표 비교 차트
+new Chart(document.getElementById('compareChart'), {
+  type: 'bar',
+  data: {
+    labels: ['중성지방 (mg/dL)', 'HDL (mg/dL)', '공복혈당 (mg/dL)'],
+    datasets: [
+      { label: '흡연자', data: [150.40, 53.91, 102.35], backgroundColor: '#ef444455', borderColor: '#ef4444', borderWidth: 1.5, borderRadius: 5 },
+      { label: '비흡연자', data: [113.45, 59.35, 97.54], backgroundColor: '#22c55e55', borderColor: '#22c55e', borderWidth: 1.5, borderRadius: 5 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { font: { family: 'Noto Sans KR', size: 11 } } } },
+    scales: {
+      x: { ticks: { font: { family: 'Noto Sans KR', size: 11 } } },
+      y: { ticks: { font: { family: 'Noto Sans KR', size: 11 } }, grid: { color: '#f0f4f8' } }
+    }
+  }
+});
+</script>
+</body>
+</html>
