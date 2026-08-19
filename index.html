@@ -71,7 +71,7 @@
       font-size: 0.78rem; font-weight: 600;
       text-align: center; padding: 1rem;
     }
-    .hero-photo .photo-placeholder span { font-size: 2rem; }
+    .hero-photo .photo-placeholder > span { font-size: 2rem; }
     .hero-photo input[type="file"] {
       position: absolute; inset: 0;
       opacity: 0; cursor: pointer; width: 100%; height: 100%;
@@ -90,7 +90,7 @@
       line-height: 1.2;
       margin-bottom: 1.2rem;
     }
-    .hero h1 span { color: var(--accent); }
+    .hero h1 > span { color: var(--accent); }
     .hero p {
       font-size: 1.05rem; color: var(--muted);
       max-width: 560px; margin-bottom: 2rem;
@@ -323,7 +323,7 @@
       padding: 2.5rem; text-align: center;
       color: var(--muted); font-size: 0.88rem;
     }
-    .project-empty span { font-size: 1.8rem; display: block; margin-bottom: 0.5rem; }
+    .project-empty > span { font-size: 1.8rem; display: block; margin-bottom: 0.5rem; }
 
     footer {
       text-align: center; padding: 2rem;
@@ -338,6 +338,25 @@
       .tl-item { grid-template-columns: 1fr; gap: 0.3rem; }
       .tl-year { color: var(--accent); font-size: 0.78rem; }
     }
+  
+
+    /* 모바일 네비게이션: 항목이 잘리지 않도록 가로 스크롤 허용 */
+    @media (max-width: 760px) {
+      nav { padding: 0 1rem; overflow: hidden; }
+      nav .logo { flex-shrink: 0; }
+      nav ul { min-width: 0; gap: 1rem; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+      nav ul::-webkit-scrollbar { display: none; }
+      nav ul li { flex-shrink: 0; }
+      nav ul a { font-size: 0.8rem; }
+    }
+    /* ── 한글 줄바꿈 규칙 (4글자 이하 어절은 줄바꿈 금지) ── */
+    html, body { word-break: keep-all; overflow-wrap: break-word; }
+    h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+    p, li, td, dd, figcaption { text-wrap: pretty; }
+    /* 삽입된 래퍼가 페이지의 span 셀렉터에 걸려 스타일이 깨지지 않도록 초기화 */
+    span.nb, span.nb-box { all: unset !important; }
+    span.nb { white-space: nowrap !important; }
+    span.nb-box { min-width: 0 !important; }
   </style>
 </head>
 <body>
@@ -648,6 +667,14 @@
     </div>
 
     <div class="tl-item">
+      <div class="tl-year">2026</div>
+      <div class="tl-content">
+        <h4>제6회 소방안전 빅데이터 경진대회 참가 (팀 Everon)</h4>
+        <p>119 보이는 ARS &lsquo;firstview&rsquo; 기획 · PM · 데이터 분석 담당</p>
+      </div>
+    </div>
+
+    <div class="tl-item">
       <div class="tl-year">2025-2</div>
       <div class="tl-content">
         <h4>연세대학교 임상병리학과 교과우수</h4>
@@ -747,6 +774,24 @@
   <div class="section-title">프로젝트</div>
   <div class="project-grid">
 
+    <a href="project_119_ars.html" target="_blank" class="project-card">
+      <div class="project-card-banner">🚑</div>
+      <div class="project-card-body">
+        <div class="project-card-tag">제6회 소방안전 빅데이터 경진대회 · 팀 Everon</div>
+        <div class="project-card-title">119 보이는 ARS · firstview</div>
+        <div class="project-card-desc">
+          폭증하는 구급 신고(13년간 57% 증가) 상황에서 신고자가 응급처치를 &ldquo;보면서&rdquo; 따라 할 수 있도록 설계한 시각화 ARS 서비스. PM·기획을 맡아 신고 데이터 분석부터 응급처치 추천 모델 설계까지 주도했습니다.
+        </div>
+        <div class="project-card-chips">
+          <span class="project-chip">서비스 기획</span>
+          <span class="project-chip">PM</span>
+          <span class="project-chip">공공데이터 분석</span>
+          <span class="project-chip">Python</span>
+          <span class="project-chip">프로토타입</span>
+        </div>
+      </div>
+    </a>
+
     <a href="portfolio_seongmin.html" target="_blank" class="project-card">
       <div class="project-card-banner">🫀</div>
       <div class="project-card-body">
@@ -811,6 +856,76 @@
 <footer>
   © 2026 최성민 · 헬스케어에 준비된 인재
 </footer>
+
+
+<!-- 한글 줄바꿈 보정: 4글자 이하 어절은 절대 줄바꿈되지 않도록 nowrap 처리 -->
+<script>
+(function () {
+  var MAX = 4; // 이 글자 수 이하의 어절은 줄바꿈하지 않음
+  var SKIP_TAGS = { SCRIPT: 1, STYLE: 1, CODE: 1, PRE: 1, TEXTAREA: 1, SVG: 1 };
+
+  function skip(el) {
+    while (el && el !== document.body) {
+      if (SKIP_TAGS[el.nodeName]) return true;
+      if (el.classList && el.classList.contains('nb')) return true;
+      if (el.hasAttribute && el.hasAttribute('data-no-nb')) return true;
+      el = el.parentElement;
+    }
+    return false;
+  }
+
+  // 공백·이모지 제외한 실제 글자 수
+  function glyphs(s) {
+    return Array.from(s.replace(/\s/g, '')).length;
+  }
+
+  function apply(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var targets = [], node;
+    while ((node = walker.nextNode())) {
+      if (!node.nodeValue || !node.nodeValue.trim()) continue;
+      if (skip(node.parentElement)) continue;
+      targets.push(node);
+    }
+    targets.forEach(function (n) {
+      var parts = n.nodeValue.split(/(\s+)/);
+      var need = parts.some(function (p) {
+        return p && !/^\s+$/.test(p) && glyphs(p) <= MAX;
+      });
+      if (!need) return;
+      var frag = document.createDocumentFragment();
+      parts.forEach(function (p) {
+        if (!p) return;
+        if (/^\s+$/.test(p) || glyphs(p) > MAX) {
+          frag.appendChild(document.createTextNode(p));
+        } else {
+          var s = document.createElement('span');
+          s.className = 'nb';
+          s.textContent = p;
+          frag.appendChild(s);
+        }
+      });
+      // flex/grid 컨테이너 안에서는 조각들이 각각 아이템이 되지 않도록 한 번 더 감쌈
+      var parent = n.parentElement;
+      var disp = parent ? getComputedStyle(parent).display : '';
+      if (/flex|grid/.test(disp)) {
+        var box = document.createElement('span');
+        box.className = 'nb-box';
+        box.appendChild(frag);
+        n.parentNode.replaceChild(box, n);
+      } else {
+        n.parentNode.replaceChild(frag, n);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { apply(document.body); });
+  } else {
+    apply(document.body);
+  }
+})();
+</script>
 
 </body>
 </html>

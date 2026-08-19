@@ -50,7 +50,7 @@
   .hero h1 .hl{color:#6fd0c9;}
   .hero p.sub{margin-top:20px;font-size:1.06rem;color:#c2d8d6;max-width:60ch;}
   .hero .tags{margin-top:26px;display:flex;flex-wrap:wrap;gap:10px;}
-  .hero .tags span{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#dcefec;
+  .hero .tags > span{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#dcefec;
     padding:8px 14px;border-radius:999px;font-size:.82rem;font-weight:600;}
   .hero .role{margin-top:22px;font-size:.9rem;color:#9fc7c4;}
   .hero .role b{color:#eaf4f3;}
@@ -122,7 +122,25 @@
   footer{background:var(--bg);color:#9fc7c4;padding:40px 0;text-align:center;font-size:.85rem;}
   footer .big{color:#eaf4f3;font-weight:800;font-size:1.05rem;margin-bottom:8px;}
   footer a{color:#6fd0c9;font-weight:700;}
-</style>
+
+  
+  /* 모바일 가로 스크롤 방지: 그리드 아이템이 최소너비에 갇히지 않도록 */
+  .g2>*, .g3>*, .g4>*, .stats>*, .heroStats>*, .flow>* { min-width: 0; }
+  @media (max-width: 820px) {
+    .wrap { padding: 0 18px; }
+    .card { padding: 20px 18px; }
+    .tbl { font-size: .82rem; table-layout: fixed; }
+    .tbl th, .tbl td { padding: 9px 8px; }
+  }
+  /* ── 한글 줄바꿈 규칙 (4글자 이하 어절은 줄바꿈 금지) ── */
+    html, body { word-break: keep-all; overflow-wrap: break-word; }
+    h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+    p, li, td, dd, figcaption { text-wrap: pretty; }
+    /* 삽입된 래퍼가 페이지의 span 셀렉터에 걸려 스타일이 깨지지 않도록 초기화 */
+    span.nb, span.nb-box { all: unset !important; }
+    span.nb { white-space: nowrap !important; }
+    span.nb-box { min-width: 0 !important; }
+  </style>
 </head>
 <body>
 <nav>
@@ -548,5 +566,75 @@
     <a href="index.html">← 포트폴리오 홈으로</a>
   </div>
 </footer>
+
+<!-- 한글 줄바꿈 보정: 4글자 이하 어절은 절대 줄바꿈되지 않도록 nowrap 처리 -->
+<script>
+(function () {
+  var MAX = 4; // 이 글자 수 이하의 어절은 줄바꿈하지 않음
+  var SKIP_TAGS = { SCRIPT: 1, STYLE: 1, CODE: 1, PRE: 1, TEXTAREA: 1, SVG: 1 };
+
+  function skip(el) {
+    while (el && el !== document.body) {
+      if (SKIP_TAGS[el.nodeName]) return true;
+      if (el.classList && el.classList.contains('nb')) return true;
+      if (el.hasAttribute && el.hasAttribute('data-no-nb')) return true;
+      el = el.parentElement;
+    }
+    return false;
+  }
+
+  // 공백·이모지 제외한 실제 글자 수
+  function glyphs(s) {
+    return Array.from(s.replace(/\s/g, '')).length;
+  }
+
+  function apply(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var targets = [], node;
+    while ((node = walker.nextNode())) {
+      if (!node.nodeValue || !node.nodeValue.trim()) continue;
+      if (skip(node.parentElement)) continue;
+      targets.push(node);
+    }
+    targets.forEach(function (n) {
+      var parts = n.nodeValue.split(/(\s+)/);
+      var need = parts.some(function (p) {
+        return p && !/^\s+$/.test(p) && glyphs(p) <= MAX;
+      });
+      if (!need) return;
+      var frag = document.createDocumentFragment();
+      parts.forEach(function (p) {
+        if (!p) return;
+        if (/^\s+$/.test(p) || glyphs(p) > MAX) {
+          frag.appendChild(document.createTextNode(p));
+        } else {
+          var s = document.createElement('span');
+          s.className = 'nb';
+          s.textContent = p;
+          frag.appendChild(s);
+        }
+      });
+      // flex/grid 컨테이너 안에서는 조각들이 각각 아이템이 되지 않도록 한 번 더 감쌈
+      var parent = n.parentElement;
+      var disp = parent ? getComputedStyle(parent).display : '';
+      if (/flex|grid/.test(disp)) {
+        var box = document.createElement('span');
+        box.className = 'nb-box';
+        box.appendChild(frag);
+        n.parentNode.replaceChild(box, n);
+      } else {
+        n.parentNode.replaceChild(frag, n);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { apply(document.body); });
+  } else {
+    apply(document.body);
+  }
+})();
+</script>
+
 </body>
 </html>

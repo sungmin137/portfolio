@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>119 보이는 ARS · firstview | 최성민 포트폴리오</title>
+<style>
+  :root{
+    --bg:#f9f9f7;
+    --surface:#ffffff;
+    --accent:#dc2626;
+    --accent-2:#b91c1c;
+    --accent-light:#fef2f2;
+    --ink:#1a1a1a;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --tag-bg:#f3f4f6;
+    --navy:#111827;
+    --radius:16px;
+    --shadow:0 2px 12px rgba(0,0,0,.06);
+    --shadow-lg:0 8px 28px rgba(0,0,0,.10);
+    --sans:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',system-ui,-apple-system,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.75;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:920px;margin:0 auto;padding:0 2rem;}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:100;background:rgba(249,249,247,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;}
+  nav .logo{font-weight:700;font-size:1.05rem;letter-spacing:-.5px;}
+  nav ul{list-style:none;display:flex;gap:1.4rem;}
+  nav ul a{font-size:.86rem;color:var(--muted);font-weight:600;transition:color .2s;}
+  nav ul a:hover{color:var(--accent);}
+  @media(max-width:760px){nav ul{display:none;}}
+  .back{font-size:.84rem;color:var(--muted);font-weight:600;}
+  .back:hover{color:var(--ink);}
+
+  /* HERO */
+  .hero{padding:80px 0 56px;border-bottom:1px solid var(--border);}
+  .eyebrow{display:inline-block;background:var(--accent-light);color:var(--accent-2);font-size:.78rem;font-weight:700;padding:.4rem .85rem;border-radius:999px;margin-bottom:1.2rem;}
+  .hero h1{font-size:2.5rem;font-weight:800;letter-spacing:-1.2px;line-height:1.28;margin-bottom:.6rem;}
+  .hero h1 .sub{display:block;font-size:1.1rem;font-weight:600;color:var(--muted);letter-spacing:-.3px;margin-top:.7rem;}
+  .hero p.lead{font-size:1.02rem;color:#374151;margin-top:1.4rem;max-width:44em;}
+  .meta{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.8rem;}
+  .meta > span{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:.4rem .9rem;font-size:.82rem;font-weight:600;color:#374151;}
+  .meta > span b{color:var(--accent-2);}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.8rem;}
+  .btn{display:inline-flex;align-items:center;gap:.45rem;padding:.7rem 1.3rem;border-radius:10px;font-size:.9rem;font-weight:700;transition:transform .15s, box-shadow .15s;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 3px 10px rgba(220,38,38,.25);}
+  .btn-outline{border:1.5px solid var(--border);background:var(--surface);color:var(--ink);}
+
+  /* SECTION */
+  section{padding:64px 0;border-bottom:1px solid var(--border);}
+  .section-label{font-size:.74rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem;}
+  .section-title{font-size:1.65rem;font-weight:800;letter-spacing:-.8px;margin-bottom:1.6rem;}
+  .section-intro{color:#374151;max-width:46em;margin-bottom:2rem;}
+  h3.sub{font-size:1.05rem;font-weight:800;margin:2rem 0 .8rem;letter-spacing:-.3px;}
+
+  /* STAT */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 1.3rem;box-shadow:var(--shadow);}
+  .stat .num{font-size:1.9rem;font-weight:800;color:var(--accent);letter-spacing:-1px;line-height:1.2;}
+  .stat .lbl{font-size:.85rem;color:var(--muted);font-weight:600;margin-top:.35rem;}
+  .stat .note{font-size:.78rem;color:#9ca3af;margin-top:.5rem;}
+
+  /* CARD */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.1rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.6rem 1.4rem;box-shadow:var(--shadow);}
+  .card .ic{font-size:1.7rem;margin-bottom:.7rem;}
+  .card h4{font-size:1rem;font-weight:800;margin-bottom:.5rem;letter-spacing:-.3px;}
+  .card p{font-size:.9rem;color:var(--muted);}
+
+  /* FLOW */
+  .flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.9rem;counter-reset:step;}
+  .step{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;padding:1.2rem 1.1rem;}
+  .step .n{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--accent-light);color:var(--accent-2);font-size:.78rem;font-weight:800;margin-bottom:.6rem;}
+  .step h4{font-size:.94rem;font-weight:800;margin-bottom:.35rem;}
+  .step p{font-size:.84rem;color:var(--muted);}
+
+  /* TABLE */
+  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  table{width:100%;border-collapse:collapse;}
+  th,td{padding:.9rem 1.1rem;text-align:left;font-size:.9rem;border-bottom:1px solid var(--border);}
+  th{background:#fafafa;font-weight:800;font-size:.8rem;letter-spacing:.3px;color:var(--muted);text-transform:uppercase;}
+  tr:last-child td{border-bottom:none;}
+  .bar{position:relative;background:var(--tag-bg);border-radius:999px;height:8px;overflow:hidden;min-width:90px;}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),#f87171);border-radius:999px;display:block;}
+  td.val{font-weight:800;color:var(--accent-2);white-space:nowrap;}
+
+  /* ROLE */
+  .role-list{list-style:none;display:grid;gap:.8rem;}
+  .role-list li{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.3rem;font-size:.94rem;display:flex;gap:.8rem;align-items:flex-start;}
+  .role-list li .v{flex:1 1 0;min-width:0;}
+  .role-list li .k{flex-shrink:0;background:var(--accent-light);color:var(--accent-2);font-size:.76rem;font-weight:800;padding:.25rem .7rem;border-radius:999px;margin-top:.15rem;white-space:nowrap;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.2rem;}
+  .chip{background:var(--tag-bg);border-radius:999px;padding:.35rem .85rem;font-size:.82rem;font-weight:600;color:#374151;white-space:nowrap;}
+
+  .callout{background:var(--accent-light);border:1px solid #fecaca;border-left:4px solid var(--accent);border-radius:12px;padding:1.2rem 1.4rem;font-size:.92rem;color:#7f1d1d;margin-top:1.6rem;}
+
+  footer{padding:48px 0 64px;text-align:center;color:var(--muted);font-size:.85rem;}
+
+  @media(max-width:640px){
+    .wrap{padding:0 1.3rem;}
+    .hero h1{font-size:1.9rem;}
+    section{padding:48px 0;}
+  }
+
+  /* ── 한글 줄바꿈 규칙 (4글자 이하 어절은 줄바꿈 금지) ── */
+  html, body { word-break: keep-all; overflow-wrap: break-word; }
+  h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+  p, li, td, dd, figcaption { text-wrap: pretty; }
+  /* 삽입된 래퍼가 페이지의 span 셀렉터에 걸려 스타일이 깨지지 않도록 초기화 */
+    span.nb, span.nb-box { all: unset !important; }
+    span.nb { white-space: nowrap !important; }
+    span.nb-box { min-width: 0 !important; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">최성민</div>
+    <ul>
+      <li><a href="#problem">문제 정의</a></li>
+      <li><a href="#data">데이터 분석</a></li>
+      <li><a href="#solution">솔루션</a></li>
+      <li><a href="#model">추천 모델</a></li>
+      <li><a href="#role">나의 역할</a></li>
+    </ul>
+    <a href="index.html" class="back">← 포트폴리오</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">제6회 소방안전 빅데이터 경진대회 · 팀 Everon</div>
+    <h1>119 보이는 ARS
+      <span class="sub">firstview — 눈으로 보는 응급처치 안내 서비스</span>
+    </h1>
+    <p class="lead">
+      구급 신고는 늘어나는데, 신고자는 여전히 전화기 너머의 목소리만 듣고 응급처치를 해야 합니다.
+      firstview는 신고 접수와 동시에 신고자의 화면에 <b>지금 이 상황에 필요한 응급처치</b>를 시각적으로 띄워 주는 서비스입니다.
+    </p>
+    <div class="meta">
+      <span>역할 <b>PM · 서비스 기획 · 데이터 분석</b></span>
+      <span>팀 <b>Everon</b></span>
+      <span>주최 <b>소방청</b></span>
+      <span>상태 <b>진행 중</b></span>
+    </div>
+    <div class="hero-cta">
+      <a href="https://sungmin137.github.io/119-project" target="_blank" rel="noopener" class="btn btn-primary">🔗 프로토타입 보기</a>
+      <a href="index.html" class="btn btn-outline">← 포트폴리오로 돌아가기</a>
+    </div>
+  </div>
+</header>
+
+<section id="problem">
+  <div class="wrap">
+    <div class="section-label">Problem</div>
+    <div class="section-title">왜 이 서비스가 필요한가</div>
+    <p class="section-intro">
+      구급 신고는 13년간 꾸준히 늘어 지금은 연간 320만 건을 넘어섰습니다.
+      그러나 신고자가 구급대 도착 전까지 받을 수 있는 도움은 대부분 <b>음성 안내</b>뿐이고,
+      당황한 신고자가 말로만 듣고 심폐소생술이나 하임리히법을 정확히 수행하기는 매우 어렵습니다.
+    </p>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="num">+57%</div>
+        <div class="lbl">13년간 구급 신고 증가율</div>
+        <div class="note">204만 건 → 320만 건</div>
+      </div>
+      <div class="stat">
+        <div class="num">320만</div>
+        <div class="lbl">연간 구급 신고 건수</div>
+        <div class="note">신고 폭증 = 구급대 도착 지연</div>
+      </div>
+      <div class="stat">
+        <div class="num">음성</div>
+        <div class="lbl">현재 제공되는 안내 방식</div>
+        <div class="note">시각 정보 없이 구두 지시에 의존</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <b>핵심 문제</b> — 골든타임은 짧고 구급대 도착은 늦어지는데, 그 사이를 메워야 할 신고자에게는
+      &ldquo;따라 할 수 있는&rdquo; 형태의 정보가 주어지지 않는다.
+    </div>
+  </div>
+</section>
+
+<section id="data">
+  <div class="wrap">
+    <div class="section-label">Data</div>
+    <div class="section-title">데이터로 확인한 현실</div>
+    <p class="section-intro">
+      소방청 구급 신고 공공데이터를 지역별 · 유형별로 분해해, 어디에서 어떤 신고가 몰리는지를 먼저 확인했습니다.
+      서비스가 가장 먼저 커버해야 할 응급처치 유형을 데이터로 정하기 위한 작업이었습니다.
+    </p>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="num">53,988건</div>
+        <div class="lbl">서울 강서구 — 전국 자치구 1위</div>
+        <div class="note">신고 밀집 지역 우선 검증 대상</div>
+      </div>
+      <div class="stat">
+        <div class="num">14,314건</div>
+        <div class="lbl">세종시 신고 유형 분석 표본</div>
+        <div class="note">유형별 분포로 우선순위 도출</div>
+      </div>
+    </div>
+
+    <h3 class="sub">분석에서 얻은 결론</h3>
+    <div class="cards">
+      <div class="card">
+        <div class="ic">📍</div>
+        <h4>신고는 특정 지역에 몰린다</h4>
+        <p>자치구 단위로 신고량 편차가 크게 나타나, 서비스 초기 검증 지역을 선정하는 근거가 되었습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">🩺</div>
+        <h4>대응 유형은 소수에 집중된다</h4>
+        <p>신고 유형을 집계한 결과 상위 소수 유형이 큰 비중을 차지해, 그 유형부터 안내 콘텐츠를 만드는 전략을 세웠습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">⏱️</div>
+        <h4>초기 대응 공백이 반복된다</h4>
+        <p>신고 접수부터 구급대 도착까지의 공백에 개입할 수 있는 채널이 필요하다는 점이 분명해졌습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="solution">
+  <div class="wrap">
+    <div class="section-label">Solution</div>
+    <div class="section-title">firstview — 보이는 ARS</div>
+    <p class="section-intro">
+      별도 앱 설치 없이, 신고 중인 사람의 화면에 바로 응급처치 가이드를 띄웁니다.
+      &ldquo;설명을 듣는 것&rdquo;에서 &ldquo;화면을 따라 하는 것&rdquo;으로 사용자 행동을 바꾸는 것이 목표입니다.
+    </p>
+
+    <div class="flow">
+      <div class="step">
+        <div class="n">1</div>
+        <h4>119 신고 접수</h4>
+        <p>신고자가 상황을 설명하면 접수 내용이 그대로 입력값이 됩니다.</p>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <h4>상황 유형 판별</h4>
+        <p>신고 내용을 바탕으로 필요한 응급처치 유형을 추천 모델이 분류합니다.</p>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <h4>화면으로 전달</h4>
+        <p>신고자의 휴대폰에 해당 처치 가이드를 즉시 시각 자료로 띄웁니다.</p>
+      </div>
+      <div class="step">
+        <div class="n">4</div>
+        <h4>따라 하며 대응</h4>
+        <p>구급대 도착 전까지 신고자가 보면서 응급처치를 수행합니다.</p>
+      </div>
+    </div>
+
+    <div class="chips">
+      <span class="chip">앱 설치 불필요</span>
+      <span class="chip">웹 기반 전달</span>
+      <span class="chip">음성 안내 병행</span>
+      <span class="chip">단계별 시각 가이드</span>
+      <span class="chip">공공서비스 연계 전제</span>
+    </div>
+  </div>
+</section>
+
+<section id="model">
+  <div class="wrap">
+    <div class="section-label">Model</div>
+    <div class="section-title">응급처치 추천 모델</div>
+    <p class="section-intro">
+      신고 상황을 입력하면 그에 맞는 응급처치 유형을 추천하도록 모델을 구성하고,
+      주요 처치 유형별로 정확도를 측정했습니다.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>응급처치 유형</th>
+            <th>정확도</th>
+            <th style="width:38%">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>하임리히법</td>
+            <td class="val">99%</td>
+            <td><span class="bar"><i style="width:99%"></i></span></td>
+          </tr>
+          <tr>
+            <td>뇌졸중 대응</td>
+            <td class="val">87%</td>
+            <td><span class="bar"><i style="width:87%"></i></span></td>
+          </tr>
+          <tr>
+            <td>화상 처치</td>
+            <td class="val">87%</td>
+            <td><span class="bar"><i style="width:87%"></i></span></td>
+          </tr>
+          <tr>
+            <td>심폐소생술 (CPR)</td>
+            <td class="val">83%</td>
+            <td><span class="bar"><i style="width:83%"></i></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      정확도가 상대적으로 낮은 <b>심폐소생술</b>은 오분류 시 위험이 가장 큰 유형이기도 합니다.
+      따라서 모델 단독 판단이 아니라 접수 요원의 확인을 거치는 구조를 전제로 설계했습니다.
+    </div>
+  </div>
+</section>
+
+<section id="role">
+  <div class="wrap">
+    <div class="section-label">My Role</div>
+    <div class="section-title">나의 역할과 기여</div>
+    <p class="section-intro">
+      팀 Everon에서 PM 겸 기획을 맡아, 문제 정의부터 데이터 분석, 서비스 구조 설계, 프로토타입 산출까지의 흐름을 주도했습니다.
+    </p>
+
+    <ul class="role-list">
+      <li><span class="k">문제 정의</span><span class="v">구급 신고 증가 추이와 초기 대응 공백을 근거로 &ldquo;왜 지금 이 서비스인가&rdquo;를 정리하고 팀의 방향을 잡았습니다.</span></li>
+      <li><span class="k">데이터 분석</span><span class="v">소방청 공공데이터를 지역별 · 유형별로 분석해 우선 대응 지역과 응급처치 유형을 선정했습니다.</span></li>
+      <li><span class="k">서비스 설계</span><span class="v">신고 접수부터 화면 전달까지의 사용자 흐름과 화면 구성을 설계했습니다.</span></li>
+      <li><span class="k">모델 기획</span><span class="v">추천 대상 응급처치 유형을 정의하고 정확도 검증 기준과 안전장치(요원 확인 단계)를 함께 설계했습니다.</span></li>
+      <li><span class="k">프로토타입</span><span class="v">기획 의도가 실제로 전달되는지 확인할 수 있는 웹 프로토타입을 만들어 팀과 심사 대상에게 시연했습니다.</span></li>
+    </ul>
+
+    <div class="chips">
+      <span class="chip">서비스 기획</span>
+      <span class="chip">PM</span>
+      <span class="chip">공공데이터 분석</span>
+      <span class="chip">Python</span>
+      <span class="chip">사용자 흐름 설계</span>
+      <span class="chip">프로토타이핑</span>
+    </div>
+  </div>
+</section>
+
+<section id="learning" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="section-label">Takeaway</div>
+    <div class="section-title">배운 것</div>
+    <div class="cards">
+      <div class="card">
+        <div class="ic">🎯</div>
+        <h4>기술보다 상황이 먼저다</h4>
+        <p>모델 성능을 올리는 것보다, 당황한 신고자가 실제로 따라 할 수 있는 형태인지가 서비스의 성패를 갈랐습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">📊</div>
+        <h4>데이터로 범위를 좁히는 법</h4>
+        <p>모든 응급 상황을 다루려 하지 않고, 데이터가 가리키는 상위 유형부터 좁혀 들어가는 것이 현실적인 기획이었습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">🛡️</div>
+        <h4>안전이 걸린 AI의 설계</h4>
+        <p>사람의 생명이 걸린 판단에서는 모델을 단독으로 두지 않고, 사람이 확인하는 단계를 반드시 남겨야 한다는 것을 배웠습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    © 2026 최성민 · 119 보이는 ARS (firstview) — 제6회 소방안전 빅데이터 경진대회<br>
+    <a href="index.html" style="color:var(--accent);font-weight:700;">← 포트폴리오로 돌아가기</a>
+  </div>
+</footer>
+
+<!-- 한글 줄바꿈 보정: 4글자 이하 어절은 절대 줄바꿈되지 않도록 nowrap 처리 -->
+<script>
+(function () {
+  var MAX = 4; // 이 글자 수 이하의 어절은 줄바꿈하지 않음
+  var SKIP_TAGS = { SCRIPT: 1, STYLE: 1, CODE: 1, PRE: 1, TEXTAREA: 1, SVG: 1 };
+
+  function skip(el) {
+    while (el && el !== document.body) {
+      if (SKIP_TAGS[el.nodeName]) return true;
+      if (el.classList && el.classList.contains('nb')) return true;
+      if (el.hasAttribute && el.hasAttribute('data-no-nb')) return true;
+      el = el.parentElement;
+    }
+    return false;
+  }
+
+  function glyphs(s) {
+    return Array.from(s.replace(/\s/g, '')).length;
+  }
+
+  function apply(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var targets = [], node;
+    while ((node = walker.nextNode())) {
+      if (!node.nodeValue || !node.nodeValue.trim()) continue;
+      if (skip(node.parentElement)) continue;
+      targets.push(node);
+    }
+    targets.forEach(function (n) {
+      var parts = n.nodeValue.split(/(\s+)/);
+      var need = parts.some(function (p) {
+        return p && !/^\s+$/.test(p) && glyphs(p) <= MAX;
+      });
+      if (!need) return;
+      var frag = document.createDocumentFragment();
+      parts.forEach(function (p) {
+        if (!p) return;
+        if (/^\s+$/.test(p) || glyphs(p) > MAX) {
+          frag.appendChild(document.createTextNode(p));
+        } else {
+          var s = document.createElement('span');
+          s.className = 'nb';
+          s.textContent = p;
+          frag.appendChild(s);
+        }
+      });
+      // flex/grid 컨테이너 안에서는 조각들이 각각 아이템이 되지 않도록 한 번 더 감쌈
+      var parent = n.parentElement;
+      var disp = parent ? getComputedStyle(parent).display : '';
+      if (/flex|grid/.test(disp)) {
+        var box = document.createElement('span');
+        box.className = 'nb-box';
+        box.appendChild(frag);
+        n.parentNode.replaceChild(box, n);
+      } else {
+        n.parentNode.replaceChild(frag, n);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { apply(document.body); });
+  } else {
+    apply(document.body);
+  }
+})();
+</script>
+</body>
+</html>
