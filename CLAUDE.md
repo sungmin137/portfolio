@@ -17,6 +17,7 @@
 - GitHub: `sungmin137/portfolio` → GitHub Pages `https://sungmin137.github.io/portfolio`
 - 로컬 원본(= git 작업 폴더): `~/Desktop/자소서 작성/자소서 베이스/sungmin portfolio/` — 이력서 등 참고 자료는 `자료/`에 두고 `.gitignore`로 배포 제외
 - 배포는 main 브랜치 push = 자동 반영. 커밋 전 반드시 아래 "검증" 절차를 거친다.
+- **브랜치 규칙**: main은 배포 전용. 새 프로젝트는 `git switch -c project/<영문명>` 브랜치에서 작업하고, `npm run check` 통과 후 main에 병합·push한다. 브랜치 목록: `git branch`.
 
 ## 3. 파일 구성
 
