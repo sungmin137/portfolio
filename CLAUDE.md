@@ -23,13 +23,14 @@
 ```
 index.html                     메인. 섹션 id 순서: job / about / education / experience / skills / certs / projects / contact
 project_sanjae_oneshot.html    산재원샷 — 제8회 K-디지털 트레이닝 해커톤 최우수상(고용노동부 장관상, 2026.09)
+project_cancer_subtype.html    유전자 변이 기반 암 아형 26종 분류 — AI 헬스케어 6기 최종 해커톤 (2026.09.09~18, Public LB 0.49598 팀 최고)
 project_119_ars.html           119 보이는 ARS(firstview) — 제6회 소방안전 빅데이터 경진대회
 project_infertility_ai.html    난임 임신 성공 예측 AI — DACON 해커톤 최종 2위
 portfolio_seongmin.html        건강지표 기반 흡연 분석 — 부트캠프 팀 프로젝트 1위 (사이드바 레이아웃, Chart.js CDN 사용)
 img/sanjae/                    산재원샷 이미지 (logo.png + screen/fig jpg 7장)
 ```
 
-- 모든 상세 페이지는 index.html의 프로젝트 카드에서 링크된다. 프로젝트 카드 순서: 산재원샷 → 119 ARS → 난임 AI → 흡연 분석.
+- 모든 상세 페이지는 index.html의 프로젝트 카드에서 링크된다. 프로젝트 카드 순서: 산재원샷 → 암 아형 분류 → 119 ARS → 흡연 분석 → 난임 AI.
 - 외부 의존성은 `portfolio_seongmin.html`의 Chart.js(cdnjs) 하나뿐. 새로 추가하지 않는다.
 
 ## 4. 프로젝트 확정 수치 (검증된 값 — 임의로 바꾸지 말 것)
@@ -37,6 +38,7 @@ img/sanjae/                    산재원샷 이미지 (logo.png + screen/fig jpg
 | 프로젝트 | 역할 | 핵심 수치 |
 |---|---|---|
 | 산재원샷 | 팀장·기획 총괄 | 생성형 AI + OCR로 산재 신청서 자동 작성, Pydantic 스키마 검증 설계. 제8회 KDT 해커톤 최우수상(고용노동부 장관상) |
+| 암 아형 분류 (최종 해커톤) | 주 파이프라인 설계·구현, 검증 체계, 팀 문서·저장소 운영 (3인 팀: 성민·혜림·혜성) | 유전자 4,384열·26클래스, train 6,201 / test 2,546, Macro F1. Public LB 0.49598(32차, 팀 최고), 시작 0.415. 쌍둥이 중복 KIPAN↔KIRC 276쌍·GBMLGG↔LGG 173쌍 → 그룹 K-fold(정직 CV 0.5433). 도약 16차 0.456 / 23차 0.475 / 32차 0.496, 혜림 NB 파트너 26차 0.480. 최종 v21 = XGB 4개(.10/.45/.20/.15) + NB .10 → 배율 26개 → 쌍둥이 규칙. 근거: `~/Desktop/oz/final_hakaton/2. team/PORTFOLIO_PROMPT.md`, `FINAL_REPORT_2026-09-18.md` |
 | 119 보이는 ARS (firstview) | PM / 기획·데이터 분석, 팀 Everon | 구급 신고 13년간 57% 증가(204만→320만), 강서구 53,988건 1위, 세종시 14,314건 유형 분석. 추천모델 정확도 CPR 83% / 하임리히 99% / 뇌졸중 87% / 화상 87%. 프로토타입 sungmin137.github.io/119-project |
 | 난임 임신 성공 예측 AI | 데이터 분석·모델링 | DACON 최종 2위. 25.6만 건, 피처 67→243, ROC-AUC 0.7423 |
 | 건강지표 흡연 분석 | 팀 프로젝트 1위 | 12개 지표, t-test · 카이제곱 · ANOVA |
