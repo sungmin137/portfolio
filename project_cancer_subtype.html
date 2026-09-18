@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>유전자 변이 기반 암 아형 분류 · AI 헬스케어 최종 해커톤 | 최성민 포트폴리오</title>
+<style>
+  :root{
+    --bg:#f9f9f7;
+    --surface:#ffffff;
+    --accent:#2563eb;
+    --accent-2:#1d4ed8;
+    --accent-light:#eff6ff;
+    --gold:#b45309;
+    --gold-light:#fffbeb;
+    --gold-border:#fde68a;
+    --ink:#1a1a1a;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --tag-bg:#f3f4f6;
+    --navy:#111827;
+    --radius:16px;
+    --shadow:0 2px 12px rgba(0,0,0,.06);
+    --shadow-lg:0 8px 28px rgba(0,0,0,.10);
+    --sans:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',system-ui,-apple-system,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.75;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;height:auto;display:block;}
+  .wrap{max-width:920px;margin:0 auto;padding:0 2rem;}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:100;background:rgba(249,249,247,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;}
+  nav .logo{font-weight:700;font-size:1.05rem;letter-spacing:-.5px;}
+  nav ul{list-style:none;display:flex;gap:1.4rem;}
+  nav ul a{font-size:.86rem;color:var(--muted);font-weight:600;transition:color .2s;}
+  nav ul a:hover{color:var(--accent);}
+  @media(max-width:760px){nav ul{display:none;}}
+  .back{font-size:.84rem;color:var(--muted);font-weight:600;}
+  .back:hover{color:var(--ink);}
+
+  /* HERO */
+  .hero{padding:72px 0 56px;border-bottom:1px solid var(--border);}
+  .hero .wrap{display:flex;gap:2.5rem;align-items:center;}
+  .hero-main{flex:1 1 0;min-width:0;}
+  .eyebrow{display:inline-block;background:var(--accent-light);color:var(--accent-2);font-size:.78rem;font-weight:700;padding:.4rem .85rem;border-radius:999px;margin-bottom:1.2rem;}
+  .hero h1{font-size:2.5rem;font-weight:800;letter-spacing:-1.2px;line-height:1.28;margin-bottom:.6rem;}
+  .hero h1 .sub{display:block;font-size:1.1rem;font-weight:600;color:var(--muted);letter-spacing:-.3px;margin-top:.7rem;}
+  .hero p.lead{font-size:1.02rem;color:#374151;margin-top:1.4rem;max-width:44em;}
+  .meta{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.8rem;}
+  .meta > span{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:.4rem .9rem;font-size:.82rem;font-weight:600;color:#374151;}
+  .meta > span b{color:var(--accent-2);}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.8rem;}
+  .btn{display:inline-flex;align-items:center;gap:.45rem;padding:.7rem 1.3rem;border-radius:10px;font-size:.9rem;font-weight:700;transition:transform .15s, box-shadow .15s;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 3px 10px rgba(37,99,235,.25);}
+  .btn-outline{border:1.5px solid var(--border);background:var(--surface);color:var(--ink);}
+
+  /* RESULT BANNER */
+  .award{background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);border:1px solid #bfdbfe;border-radius:var(--radius);padding:1.6rem 1.8rem;display:flex;gap:1.4rem;align-items:center;box-shadow:var(--shadow);}
+  .award .trophy{font-size:2.6rem;flex-shrink:0;line-height:1;}
+  .award .t{flex:1 1 0;min-width:0;}
+  .award .t h3{font-size:1.15rem;font-weight:800;color:#1e3a8a;letter-spacing:-.4px;margin-bottom:.25rem;}
+  .award .t p{font-size:.9rem;color:#1e40af;}
+  .award .t p b{color:#1e3a8a;}
+
+  /* SECTION */
+  section{padding:64px 0;border-bottom:1px solid var(--border);}
+  .section-label{font-size:.74rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem;}
+  .section-title{font-size:1.65rem;font-weight:800;letter-spacing:-.8px;margin-bottom:1.6rem;}
+  .section-intro{color:#374151;max-width:46em;margin-bottom:2rem;}
+  h3.sub{font-size:1.05rem;font-weight:800;margin:2rem 0 .8rem;letter-spacing:-.3px;}
+
+  /* STAT */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 1.3rem;box-shadow:var(--shadow);}
+  .stat .num{font-size:1.9rem;font-weight:800;color:var(--accent);letter-spacing:-1px;line-height:1.2;}
+  .stat .lbl{font-size:.85rem;color:var(--muted);font-weight:600;margin-top:.35rem;}
+  .stat .note{font-size:.78rem;color:#9ca3af;margin-top:.5rem;}
+
+  /* CARD */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.1rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.6rem 1.4rem;box-shadow:var(--shadow);}
+  .card .ic{font-size:1.7rem;margin-bottom:.7rem;}
+  .card h4{font-size:1rem;font-weight:800;margin-bottom:.5rem;letter-spacing:-.3px;}
+  .card p{font-size:.9rem;color:var(--muted);}
+
+  /* FLOW */
+  .flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.9rem;}
+  .step{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;padding:1.2rem 1.1rem;}
+  .step .n{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--accent-light);color:var(--accent-2);font-size:.78rem;font-weight:800;margin-bottom:.6rem;}
+  .step h4{font-size:.94rem;font-weight:800;margin-bottom:.35rem;}
+  .step p{font-size:.84rem;color:var(--muted);}
+
+  /* TABLE */
+  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .table-scroll{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;min-width:520px;}
+  th,td{padding:.9rem 1.1rem;text-align:left;font-size:.9rem;border-bottom:1px solid var(--border);vertical-align:top;}
+  th{background:#fafafa;font-weight:800;font-size:.8rem;letter-spacing:.3px;color:var(--muted);text-transform:uppercase;}
+  tr:last-child td{border-bottom:none;}
+  .bar{display:block;position:relative;background:var(--tag-bg);border-radius:999px;height:8px;overflow:hidden;min-width:90px;margin-top:.45rem;}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),#60a5fa);border-radius:999px;display:block;}
+  td.val{font-weight:800;color:var(--accent-2);white-space:nowrap;}
+  td.k{font-weight:700;white-space:nowrap;}
+  tr.hl td{background:var(--accent-light);}
+
+  /* TIMELINE */
+  .tl{list-style:none;display:grid;gap:.6rem;}
+  .tl li{display:flex;gap:1rem;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.2rem;font-size:.9rem;}
+  .tl li .d{flex-shrink:0;width:96px;font-weight:800;color:var(--accent-2);font-size:.84rem;margin-top:.1rem;white-space:nowrap;}
+  .tl li .v{flex:1 1 0;min-width:0;color:#374151;}
+  .tl li.leap{border-left:4px solid var(--accent);}
+  .tl li.fail{border-left:4px solid #d1d5db;}
+
+  /* ROLE */
+  .role-list{list-style:none;display:grid;gap:.8rem;}
+  .role-list li{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.3rem;font-size:.94rem;display:flex;gap:.8rem;align-items:flex-start;}
+  .role-list li .v{flex:1 1 0;min-width:0;}
+  .role-list li .k{flex-shrink:0;background:var(--accent-light);color:var(--accent-2);font-size:.76rem;font-weight:800;padding:.25rem .7rem;border-radius:999px;margin-top:.15rem;white-space:nowrap;}
+  .role-list li .k.team{background:var(--tag-bg);color:#374151;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.2rem;}
+  .chip{background:var(--tag-bg);border-radius:999px;padding:.35rem .85rem;font-size:.82rem;font-weight:600;color:#374151;white-space:nowrap;}
+
+  .callout{background:var(--accent-light);border:1px solid #bfdbfe;border-left:4px solid var(--accent);border-radius:12px;padding:1.2rem 1.4rem;font-size:.92rem;color:#1e3a8a;margin-top:1.6rem;}
+
+  footer{padding:48px 0 64px;text-align:center;color:var(--muted);font-size:.85rem;}
+
+  @media(max-width:640px){
+    .wrap{padding:0 1.3rem;}
+    .hero h1{font-size:1.9rem;}
+    section{padding:48px 0;}
+    .award{flex-direction:column;align-items:flex-start;gap:.8rem;}
+    .tl li{flex-direction:column;gap:.2rem;}
+  }
+
+  /* ── 한글 줄바꿈 규칙 (4글자 이하 어절은 줄바꿈 금지) ── */
+  html, body { word-break: keep-all; overflow-wrap: break-word; }
+  h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+  p, li, td, dd, figcaption { text-wrap: pretty; }
+  /* 삽입된 래퍼가 페이지의 span 셀렉터에 걸려 스타일이 깨지지 않도록 초기화 */
+    span.nb, span.nb-box { all: unset !important; }
+    span.nb { white-space: nowrap !important; }
+    span.nb-box { min-width: 0 !important; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">최성민</div>
+    <ul>
+      <li><a href="#result">결과</a></li>
+      <li><a href="#problem">문제 정의</a></li>
+      <li><a href="#data">데이터</a></li>
+      <li><a href="#approach">접근 과정</a></li>
+      <li><a href="#model">최종 모델</a></li>
+      <li><a href="#role">나의 역할</a></li>
+    </ul>
+    <a href="index.html" class="back">← 포트폴리오</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-main">
+      <div class="eyebrow">K-디지털 트레이닝 AI 헬스케어 6기 · 최종 해커톤 (2026.09.09 – 09.18)</div>
+      <h1>유전자 변이로 암 아형 26종 분류하기
+        <span class="sub">데이터 누수를 잡은 검증 체계와 &ldquo;새 정보만 점수로 옮겨진다&rdquo;는 원칙으로 리더보드 0.415 → 0.496</span>
+      </h1>
+      <p class="lead">
+        환자 한 명의 유전자 변이 프로파일(유전자 4,384개)로 암 아형 26종을 맞히는 다중 분류 과제입니다.
+        3인 팀에서 <b>주 파이프라인 설계·구현, 검증 체계, 팀 문서·저장소 운영</b>을 맡았고,
+        10일 동안 32번째 제출에서 팀 최고 Public LB 0.49598을 기록했습니다. 최종 제출은 test 데이터를 근거로 한 요소를 전혀 쓰지 않은 구성입니다.
+      </p>
+      <div class="meta">
+        <span>역할 <b>주 파이프라인 · 검증 체계 · 팀 운영</b></span>
+        <span>팀 <b>3명</b></span>
+        <span>평가 <b>Macro F1</b></span>
+        <span>기간 <b>2026.09.09 – 09.18 (10일)</b></span>
+        <span>결과 <b>Public LB 0.496 (팀 최고)</b></span>
+      </div>
+      <div class="hero-cta">
+        <a href="#result" class="btn btn-primary">📈 결과 보기</a>
+        <a href="index.html" class="btn btn-outline">← 포트폴리오로 돌아가기</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="result">
+  <div class="wrap">
+    <div class="section-label">Result</div>
+    <div class="section-title">결과</div>
+
+    <div class="award">
+      <div class="trophy">📈</div>
+      <div class="t">
+        <h3>Public LB 0.49598 · 팀 최고 (32차 제출)</h3>
+        <p>첫 제출 0.415 대비 <b>+0.081</b> · 도약 3번(16차·23차·32차) · 최종 제출은 <b>test 근거를 전혀 쓰지 않은 구성</b> · 저장소 github.com/sungmin137/final_hakaton (private)</p>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:1.4rem;">
+      <div class="stat">
+        <div class="num">0.496</div>
+        <div class="lbl">Public LB Macro F1</div>
+        <div class="note">Public = test 100%, 리더보드가 최종</div>
+      </div>
+      <div class="stat">
+        <div class="num">+0.081</div>
+        <div class="lbl">첫 제출 0.415 대비 상승</div>
+        <div class="note">0.415 → 0.437 → 0.456 → 0.475 → 0.496</div>
+      </div>
+      <div class="stat">
+        <div class="num">0.543</div>
+        <div class="lbl">최종 모델 정직 CV</div>
+        <div class="note">쌍둥이 그룹 5-fold · LB와의 차이 −0.047</div>
+      </div>
+      <div class="stat">
+        <div class="num">10일</div>
+        <div class="lbl">3인 팀 · 제출 하루 4회 제한</div>
+        <div class="note">한 번에 한 요소만 바꿔 LB로 판단</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      점수보다 남기고 싶은 것은 두 가지입니다. 1차 제출에서 <b>CV 0.494 vs LB 0.41</b>의 괴리를 데이터 누수로 진단해 검증 체계를 다시 세운 것,
+      그리고 LB 0.469를 낸 규칙이 규정의 회색 지대에 있다고 판단해 <b>스스로 최종에서 제외</b>하고 경위를 문서로 남긴 것입니다.
+    </div>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="wrap">
+    <div class="section-label">Problem</div>
+    <div class="section-title">과제와 제약</div>
+    <p class="section-intro">
+      입력은 환자 한 명당 유전자 4,384개 열입니다. 각 셀은 변이가 없으면 <b>WT</b>, 있으면 <b>V600E·R213*·W288fs</b> 같은 아미노산 변이 문자열이고
+      한 셀에 여러 변이가 공백으로 이어져 있습니다. 이 문자열 표를 읽어 암 아형 26종 가운데 하나를 맞혀야 합니다.
+    </p>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="num">4,384</div>
+        <div class="lbl">유전자 열 (문자열)</div>
+        <div class="note">WT 또는 HGVS 단백질 변이 표기</div>
+      </div>
+      <div class="stat">
+        <div class="num">26종</div>
+        <div class="lbl">암 아형 (다중 분류)</div>
+        <div class="note">최대 BRCA 786 · 최소 DLBC 38</div>
+      </div>
+      <div class="stat">
+        <div class="num">6,201명</div>
+        <div class="lbl">train 환자 수</div>
+        <div class="note">test 2,546명 (라벨 없음)</div>
+      </div>
+      <div class="stat">
+        <div class="num">Macro F1</div>
+        <div class="lbl">평가 지표</div>
+        <div class="note">소수 클래스 하나가 전체의 1/26</div>
+      </div>
+    </div>
+
+    <h3 class="sub">세 가지 제약</h3>
+    <div class="cards">
+      <div class="card">
+        <div class="ic">🧬</div>
+        <h4>① 숫자가 아니라 문자열</h4>
+        <p>변이 표기를 정규식으로 파싱해 missense · 동의 · 종결 · 프레임시프트 · 기타로 나누고 위치를 뽑아야 비로소 피처가 됩니다. 파서가 첫 번째 도구였습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">⚖️</div>
+        <h4>② 극단적 불균형과 저변이 클래스</h4>
+        <p>클래스별 변이 수 중앙값이 THYM 2개에서 SKCM 85개까지 벌어집니다. SARC · PRAD · PCPG · THYM · OV처럼 변이가 거의 없는 클래스는 원리적으로 정보가 부족합니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">📜</div>
+        <h4>③ 규칙과 팀의 더 엄격한 기준</h4>
+        <p>외부 데이터 금지, 하루 4회 제출, test를 학습·전처리 fit에 쓰면 수상 제외. 팀은 여기에 &ldquo;test 데이터 분석 자체 금지, 모든 근거는 train&rdquo;을 더했습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="data">
+  <div class="wrap">
+    <div class="section-label">Data</div>
+    <div class="section-title">데이터에서 발견한 구조 — 전부 train에서</div>
+    <p class="section-intro">
+      모델을 만들기 전에 표를 읽었습니다. 아래 네 가지가 이후 모든 판단의 기준이 되었고, 특히 첫 번째 발견이 프로젝트의 방향을 바꿨습니다.
+    </p>
+
+    <ul class="role-list">
+      <li><span class="k">쌍둥이 중복</span><span class="v">같은 환자가 두 라벨로 두 번 들어 있었습니다. KIPAN↔KIRC 276쌍, GBMLGG↔LGG 173쌍이 완전히 동일한 행입니다. 일반 K-fold에서는 한쪽이 학습, 다른 쪽이 검증에 들어가 답을 외우게 되고, CV가 약 +0.05 부풀려집니다. 1차 제출이 CV 0.494 / LB 0.41로 어긋난 원인이 이것이었고, <b>쌍둥이를 같은 fold에 묶는 그룹 K-fold(&ldquo;정직 CV&rdquo;)</b>로 바꿨습니다.</span></li>
+      <li><span class="k">변이 수 격차</span><span class="v">클래스별 변이 수 중앙값이 2(THYM)에서 85(SKCM)까지 벌어져 변이 개수 자체가 강한 피처였습니다. 동시에 저변이 클래스는 어떤 방법으로도 F1이 낮다는 한계 지도가 생겼습니다.</span></li>
+      <li><span class="k">표지 유전자</span><span class="v">클래스별로 lift가 큰 유전자를 표로 정리했습니다. COAD의 APC 72%, LGG의 IDH1 79%, KIRC의 VHL 45%, LAML의 NPM1 26%. ACC는 특정 동의변이가 순도 1.0으로 붙어 있어 기술적 배치 효과로 해석했습니다.</span></li>
+      <li><span class="k">변이 표기 파싱</span><span class="v">HGVS 단백질 표기를 정규식으로 다섯 유형으로 나누고 위치 숫자를 추출했습니다. 이 파서 위에 이후의 변이 유형 분리 점수와 치환 스펙트럼 피처가 올라갑니다.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="approach">
+  <div class="wrap">
+    <div class="section-label">Approach</div>
+    <div class="section-title">접근과 반복 — 무엇이 통했고 무엇이 안 통했나</div>
+    <p class="section-intro">
+      제출 기회가 하루 4회라 &ldquo;한 번에 한 요소만 바꾸고 판단은 LB로&rdquo;를 원칙으로 삼았습니다.
+      결과적으로 LB가 오른 변경은 세 번뿐이었고, 세 번 모두 같은 형태였습니다. <b>원본 표에 없던 새 정보</b>를 트리 모델이 쓸 수 있는 형태로 만든 별도 모델을 기존 모델과 로그평균한 것입니다.
+    </p>
+
+    <ul class="tl">
+      <li><span class="d">9/9</span><span class="v">클래스별 변이 개수 가중치 점수(NB 로그우도비, 내부 OOF) 140개 → XGBoost. <b>LB 0.415</b>. 같은 날 쌍둥이 중복을 발견해 정직 CV로 전환.</span></li>
+      <li><span class="d">9/9</span><span class="v">클래스 배율 후처리(train OOF에서 좌표 상승으로 맞춘 26개) + 쌍둥이 규칙(train과 동일한 test 행은 짝 라벨). <b>0.437</b>.</span></li>
+      <li class="fail"><span class="d">9/10 ~ 11</span><span class="v">실패 계열: 문헌 driver 피처, 전처리 확장 합치기, CatBoost · 배깅 앙상블, 강한 규제, 라우팅 · 재판기. CV는 올라도 LB는 내려갔습니다. 여기서 세 가지 결론을 얻었습니다 — 새 정보를 원본 열로 주면 트리가 무시한다, 같은 정보의 재표현은 블렌드해도 안 옮겨진다, 판단은 LB로 한 번에 한 요소.</span></li>
+      <li class="leap"><span class="d">9/13 · 16차</span><span class="v"><b>첫 도약 0.456.</b> 변이 유형(missense / 절단 / 동의)을 분리한 점수 모델을 따로 만들어 기존 모델과 로그평균. 단독으로는 낮지만 다른 정보를 가진 모델이라 결합이 LB로 옮겨졌습니다.</span></li>
+      <li class="fail"><span class="d">9/14</span><span class="v">규정 회색 사례: test 예측을 점검하다 만든 초과변이 규칙이 LB 0.469를 냈지만, 발견 계기가 test 분석이라 팀 기준에 따라 최종에서 제외하고 경위를 규칙 대조표 문서에 남겼습니다.</span></li>
+      <li class="leap"><span class="d">9/14 · 23차</span><span class="v"><b>둘째 도약 0.475.</b> 아미노산 치환 스펙트럼(20×20 치환 쌍 비율, 행 내부 정규화라 fit 통계가 없음). 변이 서명(UV · 흡연 · POLE · MSI · APOBEC)이 치환 분포로 드러난다는 도메인 근거에서 출발했습니다.</span></li>
+      <li><span class="d">9/15 · 26차</span><span class="v">팀원 혜림: 치환 프로필 MultinomialNB를 파트너 모델로 추가해 <b>0.480</b>.</span></li>
+      <li class="fail"><span class="d">9/16 · 27차</span><span class="v">NB 점수표를 피처로 넣은 첫 시도가 0.464로 하락. 원인은 피처 종류 등록 버그로 골격 피처가 빠진 채 학습된 것. 버그를 찾아 수정하고 재실행했으며, 이후 실행기에 골격 누락 자가 점검을 추가했습니다.</span></li>
+      <li class="leap"><span class="d">9/17 · 32차</span><span class="v"><b>셋째 도약 0.496.</b> NB 점수표(클래스별 로그확률 26열, 내부 OOF)를 파트너가 아니라 주 모델의 피처로 넣은 v4sn(단일 모델 최고 CV 0.5324)에 비중 .45를 주고 NB 파트너는 .10으로 내렸습니다.</span></li>
+      <li><span class="d">9/18 마감</span><span class="v">파트너 추가 · 변형 · 원본 열 제거 · 배율 재적합을 모두 시도했지만 CV에서 전부 닫혔습니다. v21이 CV와 LB 모두에서 날카로운 최적점이라 최종으로 확정했습니다.</span></li>
+    </ul>
+
+    <h3 class="sub">LB가 오른 변경 — 전부 &ldquo;새 정보 모델의 로그평균&rdquo;</h3>
+    <div class="table-wrap"><div class="table-scroll">
+      <table>
+        <thead><tr><th>제출</th><th>추가된 새 정보</th><th>Public LB</th><th style="width:30%">&nbsp;</th></tr></thead>
+        <tbody>
+          <tr><td class="k">1차</td><td>클래스별 변이 개수 가중치 점수</td><td class="val">0.415</td><td><span class="bar"><i style="width:60%"></i></span></td></tr>
+          <tr><td class="k">3차</td><td>클래스 배율 + 쌍둥이 규칙</td><td class="val">0.437</td><td><span class="bar"><i style="width:68%"></i></span></td></tr>
+          <tr><td class="k">16차</td><td>변이 유형 분리 점수 모델 (로그평균)</td><td class="val">0.456</td><td><span class="bar"><i style="width:76%"></i></span></td></tr>
+          <tr><td class="k">23차</td><td>아미노산 치환 스펙트럼 모델</td><td class="val">0.475</td><td><span class="bar"><i style="width:84%"></i></span></td></tr>
+          <tr><td class="k">26차</td><td>NB 파트너 모델 (혜림)</td><td class="val">0.480</td><td><span class="bar"><i style="width:88%"></i></span></td></tr>
+          <tr class="hl"><td class="k">32차</td><td>NB 점수표를 주 모델 피처로 + 비중 조정</td><td class="val">0.496</td><td><span class="bar"><i style="width:100%"></i></span></td></tr>
+        </tbody>
+      </table>
+    </div></div>
+
+    <div class="callout">
+      CV는 LB의 절대값을 예측하지 못했습니다(차이 −0.03 ~ −0.07). 그래서 CV는 &ldquo;나빠지지 않았는가&rdquo;를 거르는 문으로만 쓰고,
+      실제 채택은 LB로 했습니다. 큰 규칙, 스태킹, 같은 정보의 재표현은 CV가 올라도 LB에서 예외 없이 떨어졌습니다.
+    </div>
+  </div>
+</section>
+
+<section id="model">
+  <div class="wrap">
+    <div class="section-label">Final Model</div>
+    <div class="section-title">최종 모델 v21</div>
+    <p class="section-intro">
+      서로 다른 정보를 보는 XGBoost 4개와 MultinomialNB 파트너 1개의 확률을 로그 가중 결합한 뒤,
+      train OOF로 한 번 맞춰 고정한 클래스 배율 26개를 곱하고, argmax 후 쌍둥이 규칙을 적용합니다.
+    </p>
+
+    <div class="flow">
+      <div class="step">
+        <div class="n">1</div>
+        <h4>피처 골격 v4</h4>
+        <p>유전자 4,384개 켜짐/꺼짐 + 변이 개수 계열 + 클래스별 집약 점수 140열 (내부 OOF).</p>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <h4>새 정보 3종</h4>
+        <p>변이 유형 분리 점수, 치환 스펙트럼 411열(행 내부 비율), NB 점수표 28열(내부 OOF).</p>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <h4>로그 가중 결합</h4>
+        <p>각 파트 확률의 로그를 가중합 후 softmax. 한 모델이 &ldquo;절대 아님&rdquo;이라 한 클래스는 낮게 남습니다.</p>
+      </div>
+      <div class="step">
+        <div class="n">4</div>
+        <h4>클래스 배율 26개</h4>
+        <p>3차 모델의 train OOF에서 좌표 상승으로 맞춘 값. 이후 어떤 재적합도 이보다 나빠 고정.</p>
+      </div>
+      <div class="step">
+        <div class="n">5</div>
+        <h4>argmax + 쌍둥이 규칙</h4>
+        <p>test 행이 train 행과 완전히 같으면 그 라벨의 짝(KIPAN↔KIRC, GBMLGG↔LGG)으로 답합니다.</p>
+      </div>
+    </div>
+
+    <h3 class="sub">다섯 파트가 각각 보는 것</h3>
+    <div class="table-wrap"><div class="table-scroll">
+      <table>
+        <thead><tr><th>파트</th><th>가중</th><th>무엇을 보나</th><th>단독 정직 CV</th></tr></thead>
+        <tbody>
+          <tr><td class="k">v4s</td><td class="val">.10</td><td>유전자 유무 + 치환 스펙트럼(오타의 &lsquo;필체&rsquo;)</td><td>0.5035</td></tr>
+          <tr class="hl"><td class="k">v4sn</td><td class="val">.45</td><td>위 + NB 점수표(그 필체가 어느 암종의 증거인가)</td><td><b>0.5324</b> (단일 최고)</td></tr>
+          <tr><td class="k">v2</td><td class="val">.20</td><td>같은 유전자라도 missense / 절단 / 동의를 구분</td><td>0.4767</td></tr>
+          <tr><td class="k">v4sp</td><td class="val">.15</td><td>변이 유형 분리 + 치환 스펙트럼</td><td>0.4980</td></tr>
+          <tr><td class="k">NB (혜림)</td><td class="val">.10</td><td>치환 프로필 383개 횟수를 증거 합산으로 읽는 파트너</td><td>0.2393</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+
+    <div class="callout">
+      결합 모델의 정직 CV는 0.5433, LB는 0.4960입니다. 차이 −0.047은 test에 고변이 행이 train보다 2.4 ~ 4.7배 많은 분포 차이로 설명됩니다.
+      NB 파트너를 0으로 빼면 −0.013, 변형 파트를 더하면 −0.007로 v21 주변은 모두 낮았습니다.
+    </div>
+
+    <div class="chips">
+      <span class="chip">Python</span>
+      <span class="chip">pandas · NumPy</span>
+      <span class="chip">XGBoost</span>
+      <span class="chip">scikit-learn</span>
+      <span class="chip">StratifiedGroupKFold</span>
+      <span class="chip">MultinomialNB</span>
+      <span class="chip">정규식 파싱</span>
+      <span class="chip">로그 결합 앙상블</span>
+      <span class="chip">Macro F1</span>
+      <span class="chip">Jupyter</span>
+    </div>
+  </div>
+</section>
+
+<section id="role">
+  <div class="wrap">
+    <div class="section-label">My Role</div>
+    <div class="section-title">나의 역할과 팀원 기여</div>
+    <p class="section-intro">
+      3인 팀에서 주 파이프라인과 검증 체계, 팀 문서 · 저장소 운영을 맡았습니다.
+      세 번의 LB 도약(16차 · 23차 · 32차)은 제가 설계한 피처와 결합 구조에서 나왔고, 팀원의 실험은 방향을 확정하거나 파트너 모델로 결합되었습니다.
+    </p>
+
+    <ul class="role-list">
+      <li><span class="k">주 파이프라인</span><span class="v">변이 파서, 피처 골격(v4), 클래스별 집약 점수, 변이 유형 분리 점수, 치환 스펙트럼, NB 점수표 피처, 로그 가중 결합과 배율 · 쌍둥이 규칙 후처리까지 최종 모델의 구성 요소를 설계하고 구현했습니다.</span></li>
+      <li><span class="k">검증 체계</span><span class="v">쌍둥이 그룹 K-fold(정직 CV)를 도입하고, 인자 검증 · 로그 · 골격 누락 자가 점검이 들어간 CV 실행기를 만들었습니다. 두 모델의 확률은 저장본을 재사용해 재학습 편차를 배제했습니다.</span></li>
+      <li><span class="k">재현성</span><span class="v">제출 csv와 재현 스크립트를 1:1로 두고 두 번 실행해 md5가 같은지 확인했습니다. 최종 파이프라인은 Jupyter 노트북으로 다시 재현했습니다.</span></li>
+      <li><span class="k">팀 문서 · 저장소</span><span class="v">접근별 문서, 제출 색인, 실험 한 줄 로그, 규칙 대조표를 운영하고 GitHub PR로 팀원 코드를 합쳤습니다. 실패한 접근도 &ldquo;왜 닫혔는지&rdquo;를 남겨 같은 실험을 반복하지 않게 했습니다.</span></li>
+      <li><span class="k">규정 판단</span><span class="v">test 예측 점검에서 나온 초과변이 규칙(LB 0.469)을 팀 기준에 따라 최종에서 제외하자고 제안하고 경위를 문서화했습니다. 최종 제출은 test 근거가 전혀 없는 구성입니다.</span></li>
+      <li><span class="k team">팀원 · 혜림</span><span class="v">치환 프로필 MultinomialNB를 파트너 모델로 만들어 26차 0.480을 냈습니다. 이 모델이 최종 v21의 파트너이자, 셋째 도약(NB 점수표 피처)의 출발점이 되었습니다.</span></li>
+      <li><span class="k team">팀원 · 혜성</span><span class="v">신장 · 뇌 서브모델 라우팅(v1 ~ v22)과 클래스 배율 재계산을 검증해 두 방향 모두 &ldquo;폐기&rdquo; 결론을 확정했습니다. 안 되는 길을 닫아 준 기여입니다.</span></li>
+    </ul>
+
+    <div class="chips">
+      <span class="chip">파이프라인 설계</span>
+      <span class="chip">누수 없는 검증 설계</span>
+      <span class="chip">실험 관리 · 재현성</span>
+      <span class="chip">팀 문서 운영</span>
+      <span class="chip">Git · GitHub PR</span>
+      <span class="chip">규정 준수 판단</span>
+    </div>
+  </div>
+</section>
+
+<section id="learning" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="section-label">Takeaway</div>
+    <div class="section-title">배운 것</div>
+    <div class="cards">
+      <div class="card">
+        <div class="ic">🔍</div>
+        <h4>검증이 틀리면 전부 틀린다</h4>
+        <p>1차 제출의 CV와 LB 괴리를 &ldquo;운&rdquo;으로 넘기지 않고 파헤친 것이 프로젝트의 분기점이었습니다. 쌍둥이 중복을 찾고 나서야 이후의 모든 판단이 의미를 가졌습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">🧩</div>
+        <h4>새 정보는 모델이 쓸 수 있는 형태로</h4>
+        <p>같은 정보를 원본 열로 주면 트리는 무시했고, 클래스별 집약 점수나 행 내부 비율로 바꿔 별도 모델로 만들어 로그평균했을 때만 점수가 옮겨졌습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">🚫</div>
+        <h4>더 하지 않는 결정</h4>
+        <p>배율은 한 번 맞춘 뒤 고정, 큰 규칙 · 스태킹 · 재표현은 금물. 0.469를 내는 규칙을 규정 기준으로 스스로 빼는 것도 같은 종류의 결정이었습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">🛠️</div>
+        <h4>실수를 막는 공정이 결과만큼 중요</h4>
+        <p>피처 등록 누락, 셸 변수 분리 같은 실수를 사람이 조심하는 대신 자동 점검으로 막았습니다. 27차의 실패가 실행기의 자가 점검으로 이어졌습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    © 2026 최성민 · 유전자 변이 기반 암 아형 분류 — K-디지털 트레이닝 AI 헬스케어 6기 최종 해커톤<br>
+    <a href="index.html" style="color:var(--accent);font-weight:700;">← 포트폴리오로 돌아가기</a>
+  </div>
+</footer>
+
+<!-- 한글 줄바꿈 보정: 4글자 이하 어절은 절대 줄바꿈되지 않도록 nowrap 처리 -->
+<script>
+(function () {
+  var MAX = 4; // 이 글자 수 이하의 어절은 줄바꿈하지 않음
+  var SKIP_TAGS = { SCRIPT: 1, STYLE: 1, CODE: 1, PRE: 1, TEXTAREA: 1, SVG: 1 };
+
+  function skip(el) {
+    while (el && el !== document.body) {
+      if (SKIP_TAGS[el.nodeName]) return true;
+      if (el.classList && el.classList.contains('nb')) return true;
+      if (el.hasAttribute && el.hasAttribute('data-no-nb')) return true;
+      el = el.parentElement;
+    }
+    return false;
+  }
+
+  function glyphs(s) {
+    return Array.from(s.replace(/\s/g, '')).length;
+  }
+
+  function apply(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var targets = [], node;
+    while ((node = walker.nextNode())) {
+      if (!node.nodeValue || !node.nodeValue.trim()) continue;
+      if (skip(node.parentElement)) continue;
+      targets.push(node);
+    }
+    targets.forEach(function (n) {
+      var parts = n.nodeValue.split(/(\s+)/);
+      var need = parts.some(function (p) {
+        return p && !/^\s+$/.test(p) && glyphs(p) <= MAX;
+      });
+      if (!need) return;
+      var frag = document.createDocumentFragment();
+      parts.forEach(function (p) {
+        if (!p) return;
+        if (/^\s+$/.test(p) || glyphs(p) > MAX) {
+          frag.appendChild(document.createTextNode(p));
+        } else {
+          var s = document.createElement('span');
+          s.className = 'nb';
+          s.textContent = p;
+          frag.appendChild(s);
+        }
+      });
+      // flex/grid 컨테이너 안에서는 조각들이 각각 아이템이 되지 않도록 한 번 더 감쌈
+      var parent = n.parentElement;
+      var disp = parent ? getComputedStyle(parent).display : '';
+      if (/flex|grid/.test(disp)) {
+        var box = document.createElement('span');
+        box.className = 'nb-box';
+        box.appendChild(frag);
+        n.parentNode.replaceChild(box, n);
+      } else {
+        n.parentNode.replaceChild(frag, n);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { apply(document.body); });
+  } else {
+    apply(document.body);
+  }
+})();
+</script>
+</body>
+</html>

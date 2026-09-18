@@ -7,6 +7,7 @@ import { mkdirSync } from 'node:fs';
 const pages = [
   'index.html',
   'project_sanjae_oneshot.html',
+  'project_cancer_subtype.html',
   'project_119_ars.html',
   'project_infertility_ai.html',
   'portfolio_seongmin.html',
