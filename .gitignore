@@ -1,0 +1,5 @@
+.DS_Store
+자료/
+node_modules/
+shots/
+package-lock.json

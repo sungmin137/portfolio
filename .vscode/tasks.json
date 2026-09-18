@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "포트폴리오: 로컬 서버 실행 (localhost:5500)",
+      "type": "npm",
+      "script": "serve",
+      "isBackground": true,
+      "problemMatcher": [],
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "포트폴리오: 오버플로 검증 (390/1280px)",
+      "type": "npm",
+      "script": "check",
+      "problemMatcher": [],
+      "group": { "kind": "test", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true }
+    },
+    {
+      "label": "포트폴리오: 검증 + 스크린샷 저장 (shots/)",
+      "type": "npm",
+      "script": "shots",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true }
+    }
+  ]
+}

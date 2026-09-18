@@ -1,0 +1,14 @@
+{
+  "name": "sungmin-portfolio",
+  "private": true,
+  "type": "module",
+  "description": "최성민 웹 포트폴리오 — 순수 HTML/CSS/JS 정적 사이트 (빌드 없음)",
+  "scripts": {
+    "serve": "npx --yes serve -l 5500 .",
+    "check": "node check.mjs",
+    "shots": "node check.mjs --shots"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Chrome에서 포트폴리오 열기 (localhost:5500)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5500/",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "포트폴리오: 로컬 서버 실행 (localhost:5500)"
+    },
+    {
+      "name": "Chrome에서 포트폴리오 열기 (파일 직접)",
+      "type": "chrome",
+      "request": "launch",
+      "file": "${workspaceFolder}/index.html"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "liveServer.settings.port": 5500,
+  "liveServer.settings.root": "/",
+  "files.exclude": { "node_modules": true },
+  "search.exclude": { "node_modules": true, "shots": true },
+  "files.associations": { "*.html": "html" }
+}
