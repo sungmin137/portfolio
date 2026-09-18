@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>산재원샷 · K-디지털 트레이닝 해커톤 최우수상 | 최성민 포트폴리오</title>
+<style>
+  :root{
+    --bg:#f9f9f7;
+    --surface:#ffffff;
+    --accent:#2563eb;
+    --accent-2:#1d4ed8;
+    --accent-light:#eff6ff;
+    --gold:#b45309;
+    --gold-light:#fffbeb;
+    --gold-border:#fde68a;
+    --ink:#1a1a1a;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --tag-bg:#f3f4f6;
+    --navy:#111827;
+    --radius:16px;
+    --shadow:0 2px 12px rgba(0,0,0,.06);
+    --shadow-lg:0 8px 28px rgba(0,0,0,.10);
+    --sans:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',system-ui,-apple-system,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.75;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;height:auto;display:block;}
+  .wrap{max-width:920px;margin:0 auto;padding:0 2rem;}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:100;background:rgba(249,249,247,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;}
+  nav .logo{font-weight:700;font-size:1.05rem;letter-spacing:-.5px;}
+  nav ul{list-style:none;display:flex;gap:1.4rem;}
+  nav ul a{font-size:.86rem;color:var(--muted);font-weight:600;transition:color .2s;}
+  nav ul a:hover{color:var(--accent);}
+  @media(max-width:760px){nav ul{display:none;}}
+  .back{font-size:.84rem;color:var(--muted);font-weight:600;}
+  .back:hover{color:var(--ink);}
+
+  /* HERO */
+  .hero{padding:72px 0 56px;border-bottom:1px solid var(--border);}
+  .hero .wrap{display:flex;gap:2.5rem;align-items:center;}
+  .hero-main{flex:1 1 0;min-width:0;}
+  .hero-logo{flex-shrink:0;width:200px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;box-shadow:var(--shadow);}
+  @media(max-width:700px){.hero .wrap{flex-direction:column-reverse;align-items:flex-start;}.hero-logo{width:150px;}}
+  .eyebrow{display:inline-block;background:var(--accent-light);color:var(--accent-2);font-size:.78rem;font-weight:700;padding:.4rem .85rem;border-radius:999px;margin-bottom:1.2rem;}
+  .hero h1{font-size:2.5rem;font-weight:800;letter-spacing:-1.2px;line-height:1.28;margin-bottom:.6rem;}
+  .hero h1 .sub{display:block;font-size:1.1rem;font-weight:600;color:var(--muted);letter-spacing:-.3px;margin-top:.7rem;}
+  .hero p.lead{font-size:1.02rem;color:#374151;margin-top:1.4rem;max-width:44em;}
+  .meta{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.8rem;}
+  .meta > span{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:.4rem .9rem;font-size:.82rem;font-weight:600;color:#374151;}
+  .meta > span b{color:var(--accent-2);}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.8rem;}
+  .btn{display:inline-flex;align-items:center;gap:.45rem;padding:.7rem 1.3rem;border-radius:10px;font-size:.9rem;font-weight:700;transition:transform .15s, box-shadow .15s;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 3px 10px rgba(37,99,235,.25);}
+  .btn-outline{border:1.5px solid var(--border);background:var(--surface);color:var(--ink);}
+
+  /* AWARD BANNER */
+  .award{background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border:1px solid var(--gold-border);border-radius:var(--radius);padding:1.6rem 1.8rem;display:flex;gap:1.4rem;align-items:center;box-shadow:var(--shadow);}
+  .award .trophy{font-size:2.6rem;flex-shrink:0;line-height:1;}
+  .award .t{flex:1 1 0;min-width:0;}
+  .award .t h3{font-size:1.15rem;font-weight:800;color:#78350f;letter-spacing:-.4px;margin-bottom:.25rem;}
+  .award .t p{font-size:.9rem;color:#92400e;}
+  .award .t p b{color:#78350f;}
+
+  /* SECTION */
+  section{padding:64px 0;border-bottom:1px solid var(--border);}
+  .section-label{font-size:.74rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem;}
+  .section-title{font-size:1.65rem;font-weight:800;letter-spacing:-.8px;margin-bottom:1.6rem;}
+  .section-intro{color:#374151;max-width:46em;margin-bottom:2rem;}
+  h3.sub{font-size:1.05rem;font-weight:800;margin:2rem 0 .8rem;letter-spacing:-.3px;}
+
+  /* STAT */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 1.3rem;box-shadow:var(--shadow);}
+  .stat .num{font-size:1.9rem;font-weight:800;color:var(--accent);letter-spacing:-1px;line-height:1.2;}
+  .stat .lbl{font-size:.85rem;color:var(--muted);font-weight:600;margin-top:.35rem;}
+  .stat .note{font-size:.78rem;color:#9ca3af;margin-top:.5rem;}
+
+  /* CARD */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.1rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.6rem 1.4rem;box-shadow:var(--shadow);}
+  .card .ic{font-size:1.7rem;margin-bottom:.7rem;}
+  .card h4{font-size:1rem;font-weight:800;margin-bottom:.5rem;letter-spacing:-.3px;}
+  .card p{font-size:.9rem;color:var(--muted);}
+
+  /* FLOW */
+  .flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.9rem;}
+  .step{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;padding:1.2rem 1.1rem;}
+  .step .n{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--accent-light);color:var(--accent-2);font-size:.78rem;font-weight:800;margin-bottom:.6rem;}
+  .step h4{font-size:.94rem;font-weight:800;margin-bottom:.35rem;}
+  .step p{font-size:.84rem;color:var(--muted);}
+
+  /* FIGURE */
+  figure{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-top:1.4rem;}
+  figure img{width:100%;}
+  figcaption{font-size:.82rem;color:var(--muted);padding:.8rem 1.1rem;border-top:1px solid var(--border);background:#fafafa;}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.1rem;margin-top:1.4rem;}
+  .gallery figure{margin-top:0;}
+  .gallery figure img{aspect-ratio:4/3;object-fit:cover;object-position:top;}
+
+  /* TABLE */
+  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .table-scroll{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;min-width:520px;}
+  th,td{padding:.9rem 1.1rem;text-align:left;font-size:.9rem;border-bottom:1px solid var(--border);vertical-align:top;}
+  th{background:#fafafa;font-weight:800;font-size:.8rem;letter-spacing:.3px;color:var(--muted);text-transform:uppercase;}
+  tr:last-child td{border-bottom:none;}
+  .bar{position:relative;background:var(--tag-bg);border-radius:999px;height:8px;overflow:hidden;min-width:90px;}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),#60a5fa);border-radius:999px;display:block;}
+  td.val{font-weight:800;color:var(--accent-2);white-space:nowrap;}
+  td.k{font-weight:700;white-space:nowrap;}
+
+  /* TIMELINE */
+  .tl{list-style:none;display:grid;gap:.6rem;}
+  .tl li{display:flex;gap:1rem;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.2rem;font-size:.9rem;}
+  .tl li .d{flex-shrink:0;width:96px;font-weight:800;color:var(--accent-2);font-size:.84rem;margin-top:.1rem;white-space:nowrap;}
+  .tl li .v{flex:1 1 0;min-width:0;color:#374151;}
+
+  /* ROLE */
+  .role-list{list-style:none;display:grid;gap:.8rem;}
+  .role-list li{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.3rem;font-size:.94rem;display:flex;gap:.8rem;align-items:flex-start;}
+  .role-list li .v{flex:1 1 0;min-width:0;}
+  .role-list li .k{flex-shrink:0;background:var(--accent-light);color:var(--accent-2);font-size:.76rem;font-weight:800;padding:.25rem .7rem;border-radius:999px;margin-top:.15rem;white-space:nowrap;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.2rem;}
+  .chip{background:var(--tag-bg);border-radius:999px;padding:.35rem .85rem;font-size:.82rem;font-weight:600;color:#374151;white-space:nowrap;}
+
+  .callout{background:var(--accent-light);border:1px solid #bfdbfe;border-left:4px solid var(--accent);border-radius:12px;padding:1.2rem 1.4rem;font-size:.92rem;color:#1e3a8a;margin-top:1.6rem;}
+
+  footer{padding:48px 0 64px;text-align:center;color:var(--muted);font-size:.85rem;}
+
+  @media(max-width:640px){
+    .wrap{padding:0 1.3rem;}
+    .hero h1{font-size:1.9rem;}
+    section{padding:48px 0;}
+    .award{flex-direction:column;align-items:flex-start;gap:.8rem;}
+    .tl li{flex-direction:column;gap:.2rem;}
+  }
+
+  /* ── 한글 줄바꿈 규칙 (4글자 이하 어절은 줄바꿈 금지) ── */
+  html, body { word-break: keep-all; overflow-wrap: break-word; }
+  h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+  p, li, td, dd, figcaption { text-wrap: pretty; }
+  /* 삽입된 래퍼가 페이지의 span 셀렉터에 걸려 스타일이 깨지지 않도록 초기화 */
+    span.nb, span.nb-box { all: unset !important; }
+    span.nb { white-space: nowrap !important; }
+    span.nb-box { min-width: 0 !important; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">최성민</div>
+    <ul>
+      <li><a href="#award">수상</a></li>
+      <li><a href="#problem">문제 정의</a></li>
+      <li><a href="#solution">솔루션</a></li>
+      <li><a href="#screens">서비스 화면</a></li>
+      <li><a href="#validation">수요 검증</a></li>
+      <li><a href="#role">나의 역할</a></li>
+    </ul>
+    <a href="index.html" class="back">← 포트폴리오</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-main">
+      <div class="eyebrow">2026 제8회 K-디지털 트레이닝 해커톤 · 팀 Re:Work Lab</div>
+      <h1>산재원샷
+        <span class="sub">생성형 AI · OCR 기반 산업재해 신청 원스톱 자동화 플랫폼</span>
+      </h1>
+      <p class="lead">
+        다친 노동자가 전문 지식이나 서류 작성 경험 없이도 <b>모국어로 30분 안에</b> 산재 신청 서류를 완성하도록 돕는 AI 웹 서비스입니다.
+        5인 팀의 팀장·PM으로 기획 총괄부터 데이터 설계, 사업모델, 본선 발표까지 맡았습니다.
+      </p>
+      <div class="meta">
+        <span>역할 <b>팀장 · PM · 서비스 기획</b></span>
+        <span>팀 <b>Re:Work Lab (5명)</b></span>
+        <span>주최 <b>고용노동부</b></span>
+        <span>기간 <b>2026.06 – 2026.09</b></span>
+        <span>결과 <b>최우수상</b></span>
+      </div>
+      <div class="hero-cta">
+        <a href="#award" class="btn btn-primary">🏆 수상 내역</a>
+        <a href="index.html" class="btn btn-outline">← 포트폴리오로 돌아가기</a>
+      </div>
+    </div>
+    <div class="hero-logo">
+      <img src="img/sanjae/logo.png" alt="산재원샷 로고 — 안전모를 쓴 파랑새" />
+    </div>
+  </div>
+</header>
+
+<section id="award">
+  <div class="wrap">
+    <div class="section-label">Award</div>
+    <div class="section-title">수상</div>
+
+    <div class="award">
+      <div class="trophy">🏆</div>
+      <div class="t">
+        <h3>제8회 K-디지털 트레이닝 해커톤 최우수상 · 고용노동부 장관상</h3>
+        <p>자유과제 부문 · 본선 20팀 중 최우수상 2팀 · 2026.09.04 시상 · <b>주최 고용노동부</b> · 주관 한국기술교육대학교 직업능력심사평가원</p>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:1.4rem;">
+      <div class="stat">
+        <div class="num">20팀</div>
+        <div class="lbl">전국 KDT 훈련생 본선 진출</div>
+        <div class="note">예선 통과 후 본선 발표·시연</div>
+      </div>
+      <div class="stat">
+        <div class="num">2.5개월</div>
+        <div class="lbl">접수부터 본선까지</div>
+        <div class="note">2026.06.22 접수 → 09.02~04 본선</div>
+      </div>
+      <div class="stat">
+        <div class="num">5명</div>
+        <div class="lbl">팀 Re:Work Lab</div>
+        <div class="note">PM 1 · APM 1 · AI/ML 2 · FE·BE·Infra 1</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      2026년 대회 주제는 &ldquo;AI로 확장되는 인간의 가능성&rdquo;. 시상 당일 아주경제·헤럴드경제 기사에 자유과제 최우수상 팀으로 팀명(RE: Work Lab)이 게재되었습니다.
+    </div>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="wrap">
+    <div class="section-label">Problem</div>
+    <div class="section-title">왜 이 서비스가 필요한가</div>
+    <p class="section-intro">
+      산재 신청 건수는 5년 새 절반 가까이 늘었지만, 신청은 여전히 요양급여신청서·재해경위서·초진소견서 등
+      최소 5종의 서류를 노동자가 직접 준비해야 합니다. 서류가 어려워 노무사 대행(평균 55만 원)에 의존하거나
+      신청 자체를 포기하는 사람이 많고, 특히 <b>외국인 노동자와 고령 노동자</b>가 이 벽에 가장 취약합니다.
+    </p>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="num">+49.4%</div>
+        <div class="lbl">산재 신청 건수 증가 (2020→2025)</div>
+        <div class="note">123,921건 → 185,092건</div>
+      </div>
+      <div class="stat">
+        <div class="num">9,219명</div>
+        <div class="lbl">외국인 산재 피해자 (2024)</div>
+        <div class="note">재해의 78%가 건설·제조업 집중</div>
+      </div>
+      <div class="stat">
+        <div class="num">2개 언어</div>
+        <div class="lbl">공단 요양급여신청서 제공 언어</div>
+        <div class="note">한국어·영어뿐 — 아시아 국적 취업자 271만 명</div>
+      </div>
+      <div class="stat">
+        <div class="num">55만 원</div>
+        <div class="lbl">노무사 대행 비용 (평균)</div>
+        <div class="note">30~80만 원 · 서류 작성에 평균 7일</div>
+      </div>
+    </div>
+
+    <h3 class="sub">세 갈래로 정리한 문제</h3>
+    <div class="cards">
+      <div class="card">
+        <div class="ic">🧱</div>
+        <h4>① 아직 높은 산재의 벽</h4>
+        <p>어떤 서류가 필요한지 판단하는 것부터 노동자의 몫. 요양급여신청서 하나에만 약 35개 항목을 써야 하고, 재해 유형에 따라 서류가 최대 14종까지 늘어납니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">📉</div>
+        <h4>② 서류 편차가 판정 편차를 만든다</h4>
+        <p>수기 작성 서류의 누락·오기·모호한 표현이 보완요구→재제출→재접수를 반복시키고, 그 부담은 근로복지공단 담당자가 떠안습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">🕳️</div>
+        <h4>③ 디지털 전환의 공백</h4>
+        <p>정부의 K-산재보험 4.0은 접수 이후 심사 단계에 초점이 맞춰져 있어, 서류를 만들고 모으는 신청 단계는 여전히 개인 역량에 맡겨져 있습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="solution">
+  <div class="wrap">
+    <div class="section-label">Solution</div>
+    <div class="section-title">산재원샷 — 신청 전 단계를 AI가 맡는다</div>
+    <p class="section-intro">
+      이용자는 사고 경위만 모국어로 서술하고, 나머지는 시스템이 채웁니다. AI가 빠진 요소를 되묻고, OCR이 진단서를 읽고,
+      공단 공식 서식 그대로 요양급여신청서와 재해경위서를 생성한 뒤 제출 전 누락까지 검증합니다.
+      설계 원칙은 &ldquo;결정적 로직은 코드로, 판단이 필요한 부분만 AI로&rdquo;였습니다.
+    </p>
+
+    <div class="flow">
+      <div class="step">
+        <div class="n">1</div>
+        <h4>언어 · 재해 유형 선택</h4>
+        <p>8개 언어 중 모국어를 고르면 전 구간이 전환되고, 유형별 필요 서류와 준비 순서가 안내됩니다.</p>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <h4>사고 경위 서술 · AI 되묻기</h4>
+        <p>편하게 적은 서술에서 빠진 요소(시각·작업 내용·목격자)를 AI가 되물어 채웁니다.</p>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <h4>진단서 OCR 추출</h4>
+        <p>촬영한 진단서에서 상병명·의료기관을 추출해 원본과 나란히 대조합니다.</p>
+      </div>
+      <div class="step">
+        <div class="n">4</div>
+        <h4>서류 생성 · 검토</h4>
+        <p>육하원칙 재해경위서와 공단 서식 요양급여신청서를 생성하고 필수 항목 누락·모호 표현을 검증합니다.</p>
+      </div>
+      <div class="step">
+        <div class="n">5</div>
+        <h4>표준 제출 패키지</h4>
+        <p>PDF 2종과 누락 점검 체크리스트를 묶어 내려받거나 제출 방법을 선택합니다.</p>
+      </div>
+    </div>
+
+    <figure>
+      <img src="img/sanjae/fig_flow.jpg" alt="이용자가 넣은 정보(프로필·사고 정보·진단서·기타 자료)가 산재원샷을 거쳐 재해경위서·요양급여신청서 PDF·표준 제출 패키지로 바뀌는 흐름" loading="lazy" />
+      <figcaption>입력 데이터 → 산출 결과. 본선 기획서에 수록한 그림으로, 전 과정이 모국어로 진행됩니다.</figcaption>
+    </figure>
+
+    <h3 class="sub">핵심 기술 5가지와 선택 이유</h3>
+    <div class="table-wrap"><div class="table-scroll">
+      <table>
+        <thead><tr><th>구분</th><th>기술</th><th>왜 필요한가</th></tr></thead>
+        <tbody>
+          <tr><td class="k">접근성</td><td>다국어 UI + 도메인 번역 (8개 언어)</td><td>범용 번역기는 &lsquo;유압 프레스에 협착&rsquo; 같은 현장 표현을 오역</td></tr>
+          <tr><td class="k">편의성</td><td>생성형 AI 문서 생성 · 되묻기</td><td>정보 부족으로 완성도가 떨어지는 것을 막기 위해 빠진 요소를 AI가 수집</td></tr>
+          <tr><td class="k">편의성</td><td>OCR (진단서 · 사업주 확인서)</td><td>의료기관 서식이 표준화돼 있지 않아 템플릿 매칭이 불가</td></tr>
+          <tr><td class="k">경제성</td><td>항목 단위 검증 + AI 검토</td><td>필수 항목이 재해 유형·고용형태별로 달라 정적 폼 검증만으로는 부족</td></tr>
+          <tr><td class="k">경제성</td><td>표준 제출 패키지 + 완성도 정량화</td><td>충족률을 계산해 넘겨야 공단 담당자가 형식이 아닌 판단에만 집중 가능</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+
+    <figure>
+      <img src="img/sanjae/fig_compare.jpg" alt="기존 방식과 산재원샷을 신청자 관점(서류 작성·언어 지원·절차 안내·접근성)과 근로복지공단 관점(서류 검토·접수 품질·접수 형태)에서 비교한 표" loading="lazy" />
+      <figcaption>기존 방식 vs 산재원샷 — 신청자 관점과 근로복지공단 관점.</figcaption>
+    </figure>
+
+    <div class="chips">
+      <span class="chip">React + TypeScript</span>
+      <span class="chip">FastAPI</span>
+      <span class="chip">OpenAI API</span>
+      <span class="chip">PaddleOCR</span>
+      <span class="chip">Supabase</span>
+      <span class="chip">i18next (8개 언어)</span>
+      <span class="chip">Docker + Nginx</span>
+    </div>
+  </div>
+</section>
+
+<section id="screens">
+  <div class="wrap">
+    <div class="section-label">Screens</div>
+    <div class="section-title">실제 작동하는 서비스 화면</div>
+    <p class="section-intro">
+      본선 전 실서비스로 배포해 상시 접속 가능한 상태로 심사에 임했습니다. 아래는 본선 기획서에 수록한 서비스 화면입니다.
+    </p>
+    <div class="gallery">
+      <figure>
+        <img src="img/sanjae/screen1_lang.jpg" alt="로그인 및 언어 선택 화면" loading="lazy" />
+        <figcaption>① 로그인 · 언어 선택</figcaption>
+      </figure>
+      <figure>
+        <img src="img/sanjae/screen3_ai.jpg" alt="사고 당시 상황을 입력하는 화면 — 재해 유형 선택과 사고 정보 입력" loading="lazy" />
+        <figcaption>② 사고 정보 입력 — 기억나는 대로 적으면 AI가 문장을 정리</figcaption>
+      </figure>
+      <figure>
+        <img src="img/sanjae/screen5_ocr.jpg" alt="진단서 OCR 추출 결과를 원본과 대조하는 화면" loading="lazy" />
+        <figcaption>③ 진단서 OCR 추출 결과 확인</figcaption>
+      </figure>
+      <figure>
+        <img src="img/sanjae/screen6_review.jpg" alt="AI가 생성된 서류의 누락 항목과 모호한 표현을 검토하는 화면" loading="lazy" />
+        <figcaption>④ AI 서류 검토 — 누락 항목·모호 표현 감지</figcaption>
+      </figure>
+      <figure>
+        <img src="img/sanjae/screen8_done.jpg" alt="제출 완료 및 PDF 다운로드 화면" loading="lazy" />
+        <figcaption>⑤ 제출 완료 · 서류 패키지 다운로드</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="validation">
+  <div class="wrap">
+    <div class="section-label">Validation</div>
+    <div class="section-title">가설이 아니라 데이터로</div>
+    <p class="section-intro">
+      심사 기준이 기대효과·수익모델·기술 필연성이었기에, 가설만으로는 설득할 수 없다고 판단했습니다.
+      예비 이용자 설문(102명, 2026.08.09~12)과 현직 노무사·건설업 대표 인터뷰로 수요를 확인하고,
+      표본의 한계(내국인 100%, 20~30대 편중)도 발표 자료에 그대로 명시했습니다.
+    </p>
+
+    <div class="table-wrap"><div class="table-scroll">
+      <table>
+        <thead><tr><th>설문 문항 (n=102)</th><th>응답</th><th style="width:34%">&nbsp;</th></tr></thead>
+        <tbody>
+          <tr><td>다치면 이런 지원을 받고 싶다</td><td class="val">98.0%</td><td><span class="bar"><i style="width:98%"></i></span></td></tr>
+          <tr><td>AI 30분 서비스가 있다면 이용하겠다</td><td class="val">93.1%</td><td><span class="bar"><i style="width:93%"></i></span></td></tr>
+          <tr><td>산재 신청이 어려울 것 같다</td><td class="val">77.5%</td><td><span class="bar"><i style="width:77%"></i></span></td></tr>
+          <tr><td>가장 큰 걱정 — 회사와의 관계</td><td class="val">63.4%</td><td><span class="bar"><i style="width:63%"></i></span></td></tr>
+          <tr><td>복잡하면 신청을 포기할 것 같다</td><td class="val">19.6%</td><td><span class="bar"><i style="width:20%"></i></span></td></tr>
+        </tbody>
+      </table>
+    </div></div>
+
+    <div class="callout">
+      가장 큰 심리적 장벽은 서류가 아니라 <b>회사와의 관계</b>였고, 원하는 도움도 &ldquo;대신 작성&rdquo;보다 &ldquo;서류 목록·절차 안내&rdquo;가 앞섰습니다.
+      이 결과를 근거로 유형별 서류·절차 안내를 자동 생성 못지않은 핵심 기능으로 두고, 사업주 비공개 처리 같은 장치를 기획에 반영했습니다.
+    </div>
+
+    <h3 class="sub">사업 모델 — 이용자는 무료, 구매자는 근로복지공단 (B2G)</h3>
+    <div class="cards">
+      <div class="card">
+        <div class="ic">🔁</div>
+        <h4>멘토링 피드백으로 피봇</h4>
+        <p>초기 구독·광고 수익모델이 &ldquo;지속 가능한가&rdquo;라는 지적을 받고, 사회적기업 + 근로복지공단 B2G 단일 구조로 전면 개편. 기획서를 v1부터 v29까지 개정했습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">🏛️</div>
+        <h4>정책과 맞물린 영업 논리</h4>
+        <p>고용노동부가 업무상질병 처리기간 단축(227.7일→120일)을 공표한 상태라, 새 필요를 설득하는 게 아니라 수단을 제공하는 구조로 설계했습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">💸</div>
+        <h4>건당 31~57원</h4>
+        <p>연간 신청 185,092건 전량 처리 시에도 연 577만~1,047만 원. 공단 예산 규모에서 도입 부담이 사실상 없다는 점이 발표의 핵심 논거였습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap">
+    <div class="section-label">Process</div>
+    <div class="section-title">추진 경과</div>
+    <ul class="tl">
+      <li><span class="d">6월 말 ~ 7/8</span><span class="v">팀 결성, 서비스명 확정, 참가신청서·기획서·서약서 제출 (예선)</span></li>
+      <li><span class="d">7월 1~2주</span><span class="v">유저 플로우 STEP0~7, MVP 시연 범위 결정, 기술 스택 확정, 12종 서식 729항목 데이터 딕셔너리, 19테이블 ERD</span></li>
+      <li><span class="d">7월 3~4주</span><span class="v">GPT 프롬프트·응답 스키마 설계, 서류 생성 파이프라인, 1차 멘토링, 현직 노무사 인터뷰</span></li>
+      <li><span class="d">7/31 ~ 8/10</span><span class="v">사회적기업 + B2G 모델 확정, 본선 기획서 개정 후 최종본(10p) 제출, 예선 통과 (본선 20팀)</span></li>
+      <li><span class="d">8월</span><span class="v">React UI·8개 언어 통합, OCR·AI 검토·관리자 대시보드, 설문 102명 분석, 약관·개인정보처리방침</span></li>
+      <li><span class="d">8/29 ~ 9/2</span><span class="v">발표덱 10개 버전 · 발표 대본 · 소개 영상 · 보도자료 준비</span></li>
+      <li><span class="d">9/2 ~ 9/4</span><span class="v">본선 멘토링, 9/3 발표·시연(10분), 9/4 자유과제 최우수상 수상</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="role">
+  <div class="wrap">
+    <div class="section-label">My Role</div>
+    <div class="section-title">나의 역할과 기여</div>
+    <p class="section-intro">
+      팀장 · PM으로서 기획 총괄, 일정 관리, 대외 문서, 본선 발표를 맡았습니다.
+      팀원 모두 산재·노동법 분야 경험이 없는 상태에서 출발했기에, 낯선 도메인을 구조화해 팀이 같은 기준으로 일하게 만드는 것이 첫 과제였습니다.
+    </p>
+
+    <ul class="role-list">
+      <li><span class="k">도메인 구조화</span><span class="v">근로복지공단 서식 12종 이상, 729개 입력 항목을 전수 조사해 데이터 딕셔너리로 정리하고 이용자·사업주·제3자로 입력 주체를 분류했습니다. 기획·프론트·백엔드가 같은 항목 정의를 쓰게 한 기준 문서입니다.</span></li>
+      <li><span class="k">MVP 범위 결정</span><span class="v">그중 82개 항목으로 MVP 범위를 태깅(사전 프로필 21 / 재해 입력 31 / OCR 19 / GPT 생성 2 / 확장 9)해 &ldquo;무엇을 만들고 무엇을 미룰지&rdquo;를 팀이 합의하도록 했고, 이후 우선순위 논쟁이 사라졌습니다.</span></li>
+      <li><span class="k">데이터 설계</span><span class="v">유저 플로우 STEP0~7과 입력 폼 스펙을 작성하고, 팀 ERD에 4개 테이블(witnesses, commute_details, other_compensations, medical_infos)을 추가 제안했습니다.</span></li>
+      <li><span class="k">사업모델 · 법적 검토</span><span class="v">멘토링 지적을 받아 수익모델을 B2G로 전환하고 운영비용 시뮬레이션을 계산했습니다. 공인노무사법 제27조(업무 제한)를 검토해 서비스가 &lsquo;대행&rsquo;이 아닌 &lsquo;작성 보조&rsquo;임을 명확히 하는 논리와 이용약관·개인정보처리방침을 작성했습니다.</span></li>
+      <li><span class="k">통계 검증</span><span class="v">발표·서류에 쓰인 통계 출처를 원자료와 대조해 잘못된 옛 값을 교정하고, 공단 자체 AI 성과를 우리 효과처럼 쓰지 않도록 원칙을 세웠습니다. 심사위원 질의에 방어 가능한 근거를 만드는 작업이었습니다.</span></li>
+      <li><span class="k">문서 · 발표</span><span class="v">예선 5p → 본선 10p 기획서(통계 16건 출처, 인포그래픽 8장), 발표덱 10개 버전, 10분 발표 대본, 보도자료까지 서류 전체를 총괄하고 본선 발표를 담당했습니다.</span></li>
+      <li><span class="k">임상병리 배경 활용</span><span class="v">산재 서류의 핵심은 진단서·초진소견서 같은 의료 문서입니다. 상병코드·의료기관 서식을 아는 것이 OCR 추출 항목 정의와 의료정보 처리 원칙을 세우는 데 직접 쓰였습니다.</span></li>
+    </ul>
+
+    <div class="chips">
+      <span class="chip">팀장 · PM</span>
+      <span class="chip">서비스 기획</span>
+      <span class="chip">데이터 딕셔너리</span>
+      <span class="chip">MVP 범위 설계</span>
+      <span class="chip">B2G 사업모델</span>
+      <span class="chip">설문 설계 · 분석</span>
+      <span class="chip">본선 발표</span>
+    </div>
+  </div>
+</section>
+
+<section id="learning" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="section-label">Takeaway</div>
+    <div class="section-title">배운 것</div>
+    <div class="cards">
+      <div class="card">
+        <div class="ic">🗂️</div>
+        <h4>낯선 분야는 구조화부터</h4>
+        <p>729개 항목을 표로 정리하고 나서야 팀이 같은 언어로 말하기 시작했습니다. 새로운 도메인을 빠르게 학습해 구조화하는 것이 PM의 첫 번째 일이었습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">📊</div>
+        <h4>근거는 방어 가능해야 한다</h4>
+        <p>102명 설문의 한계를 스스로 먼저 밝히고, 공단의 성과를 우리 효과로 쓰지 않는 것. 과장하지 않은 수치가 오히려 심사에서 신뢰를 만들었습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">🔁</div>
+        <h4>피드백으로 방향을 바꾸는 용기</h4>
+        <p>수익모델을 통째로 폐기하고 B2G로 다시 세우는 결정이 가장 어려웠지만, 그 피봇이 &ldquo;누가 돈을 내는가&rdquo;에 답할 수 있게 해 주었습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    © 2026 최성민 · 산재원샷 — 제8회 K-디지털 트레이닝 해커톤 최우수상 (고용노동부 장관상)<br>
+    <a href="index.html" style="color:var(--accent);font-weight:700;">← 포트폴리오로 돌아가기</a>
+  </div>
+</footer>
+
+<!-- 한글 줄바꿈 보정: 4글자 이하 어절은 절대 줄바꿈되지 않도록 nowrap 처리 -->
+<script>
+(function () {
+  var MAX = 4; // 이 글자 수 이하의 어절은 줄바꿈하지 않음
+  var SKIP_TAGS = { SCRIPT: 1, STYLE: 1, CODE: 1, PRE: 1, TEXTAREA: 1, SVG: 1 };
+
+  function skip(el) {
+    while (el && el !== document.body) {
+      if (SKIP_TAGS[el.nodeName]) return true;
+      if (el.classList && el.classList.contains('nb')) return true;
+      if (el.hasAttribute && el.hasAttribute('data-no-nb')) return true;
+      el = el.parentElement;
+    }
+    return false;
+  }
+
+  function glyphs(s) {
+    return Array.from(s.replace(/\s/g, '')).length;
+  }
+
+  function apply(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var targets = [], node;
+    while ((node = walker.nextNode())) {
+      if (!node.nodeValue || !node.nodeValue.trim()) continue;
+      if (skip(node.parentElement)) continue;
+      targets.push(node);
+    }
+    targets.forEach(function (n) {
+      var parts = n.nodeValue.split(/(\s+)/);
+      var need = parts.some(function (p) {
+        return p && !/^\s+$/.test(p) && glyphs(p) <= MAX;
+      });
+      if (!need) return;
+      var frag = document.createDocumentFragment();
+      parts.forEach(function (p) {
+        if (!p) return;
+        if (/^\s+$/.test(p) || glyphs(p) > MAX) {
+          frag.appendChild(document.createTextNode(p));
+        } else {
+          var s = document.createElement('span');
+          s.className = 'nb';
+          s.textContent = p;
+          frag.appendChild(s);
+        }
+      });
+      // flex/grid 컨테이너 안에서는 조각들이 각각 아이템이 되지 않도록 한 번 더 감쌈
+      var parent = n.parentElement;
+      var disp = parent ? getComputedStyle(parent).display : '';
+      if (/flex|grid/.test(disp)) {
+        var box = document.createElement('span');
+        box.className = 'nb-box';
+        box.appendChild(frag);
+        n.parentNode.replaceChild(box, n);
+      } else {
+        n.parentNode.replaceChild(frag, n);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { apply(document.body); });
+  } else {
+    apply(document.body);
+  }
+})();
+</script>
+</body>
+</html>
